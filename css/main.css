@@ -1465,13 +1465,27 @@ a,a:hover, .overlay, img, .form-control,  .form-control:hover, button{
   }
   .carousel-control-prev,
   .carousel-control-next {
-    background-color: #e1e1e1;
+    background-color: #f8b864;
     width: 5vh;
     height: 5vh;
     border-radius: 50%;
     top: 50%;
     transform: translateY(-50%);
   }
+  /* Custom CSS to style carousel control arrows */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #f8b864; /* Replace 'yourColor' with the desired color */
+}
+
+/* Custom CSS to style carousel control arrows on hover */
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    width: 8vh;
+    height: 8vh;}
+
+
+
   @media (min-width: 768px) {
     .card img {
       height: 11em;

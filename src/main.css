@@ -1,0 +1,10 @@
+.social-icon{
+    font-size: 40px;
+    color: #fff;
+    transition: all 0.9s ease; 
+
+}
+.social-icon :hover {
+  font-size: 55px; 
+  color: blue;
+}

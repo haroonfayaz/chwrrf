@@ -1,14 +1,13 @@
-import { Box ,Container} from '@mui/material'
-import React from 'react'
+import { Box, Container } from "@mui/material";
+import React from "react";
+import Footer from "../Components/Footer";
 
 const Home = () => {
   return (
     <Box>
-    <Container>
-      <h1>this is Home page </h1>
-      </Container>
-       </Box>
-  )
-}
+      <Footer />
+    </Box>
+  );
+};
 
-export default Home
+export default Home;

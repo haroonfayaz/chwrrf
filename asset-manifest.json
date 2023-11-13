@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/chwrrf/static/css/main.b5ce23a3.css",
+    "main.js": "/chwrrf/static/js/main.9a4a1191.js",
+    "static/media/page-header-bg.jpg": "/chwrrf/static/media/page-header-bg.2781e03c24351eebeb40.jpg",
+    "index.html": "/chwrrf/index.html",
+    "main.b5ce23a3.css.map": "/chwrrf/static/css/main.b5ce23a3.css.map",
+    "main.9a4a1191.js.map": "/chwrrf/static/js/main.9a4a1191.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b5ce23a3.css",
+    "static/js/main.9a4a1191.js"
+  ]
+}

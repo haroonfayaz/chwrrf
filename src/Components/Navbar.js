@@ -8,38 +8,36 @@ import Menu from "@mui/material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-// import AdbIcon from "@mui/icons-material/Adb";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
 import { Avatar } from "@mui/material";
+import { Link as ScrollLink } from "react-scroll";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 const menuItems = [
   {
-    route: "Home",
-    path: "/",
-  },
-  {
     route: "About",
-    path: "/about",
+    target: "about",
   },
   {
     route: "Missions",
-    path: "/mission",
+    target: "mission",
   },
   {
     route: "Team",
-    path: "/team",
+    target: "team",
   },
   {
     route: "Campaigns",
-    path: "/campaigns",
+    target: "campaigns",
   },
   {
     route: "Volunteers",
-    path: "/volunteers",
+    target: "volunteers",
   },
 ];
 const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [anchorElNav, setAnchorElNav] = useState(null);
 
   const handleOpenNavMenu = (event) => {
@@ -48,6 +46,10 @@ const Navbar = () => {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+
+    if (location.pathname === "/blog") {
+      navigate("/");
+    }
   };
 
   return (
@@ -81,7 +83,7 @@ const Navbar = () => {
                 textDecoration: "none",
               }}
             >
-              CHWRFF
+              CHWRRF
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
@@ -113,21 +115,34 @@ const Navbar = () => {
                 }}
                 PaperProps={{
                   style: {
-                    width: "200px", 
-                    marginLeft: "0", 
-
+                    width: "200px",
+                    marginLeft: "0",
                   },
                 }}
               >
+                <Typography
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                    fontWeight: 500,
+                    fontSize: 20,
+                  }}
+                >
+                  <Link to="/">Home</Link>
+                </Typography>
                 {menuItems.map((item) => (
-                  <MenuItem key={item} onClick={handleCloseNavMenu}>
+                  <MenuItem key={item.route} onClick={handleCloseNavMenu}>
                     <Typography>
-                      <Link
-                        style={{ textDecoration: "none", color: "black",fontWeight:700  }}
-                        to={item.path}
+                      <ScrollLink
+                        activeClass="active"
+                        to={item.target}
+                        spy={true}
+                        smooth={true}
+                        offset={-70}
+                        duration={0}
                       >
                         {item.route}
-                      </Link>
+                      </ScrollLink>
                     </Typography>
                   </MenuItem>
                 ))}
@@ -162,39 +177,64 @@ const Navbar = () => {
             >
               CHWRRF
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } ,ml:30}}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", md: "flex" },
+                ml: 30,
+                alignItems: "center",
+              }}
+            >
+             <Link to ="/"
+             style={{
+                  textDecoration: "none",
+                  color:"black",
+                }}>
+
+              <Typography
+                sx={{
+                  fontWeight: 500,
+                  fontSize: 20,
+
+                }}
+              >
+                Home
+              </Typography>
+             </Link>
               {menuItems.map((item) => (
-                <Button
-                  key={item}
-                  onClick={handleCloseNavMenu}
-                  sx={{
-                    textAlign: "right",
-                    color: "green",
-                    display: "block",
-                    fontWeight: 700,
-                    fontSize: "14px",
-                    alignItems:"center"
-                  }}
-                >
-                  <Link
+                <MenuItem key={item.route} onClick={handleCloseNavMenu}>
+                  <Typography
                     style={{
                       textDecoration: "none",
                       color: "black",
-                      fontSize: "18px",
+                      fontWeight: 500,
+                      fontSize: 20,
                     }}
-                    to={item.path}
                   >
-                    {item.route}
-                  </Link>
-                </Button>
+                    <ScrollLink
+                      activeClass="active"
+                      to={item.target}
+                      spy={true}
+                      smooth={true}
+                      offset={-70}
+                      duration={500}
+                    >
+                      {item.route}
+                    </ScrollLink>
+                  </Typography>
+                </MenuItem>
               ))}
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               <IconButton sx={{ p: 0 }}>
                 <Button
                   variant="contained"
-                  color="success"
-                  sx={{ fontWeight: 900, height: "40px", fontSize: "16px" }}
+                  sx={{
+                    fontWeight: 900,
+                    height: "40px",
+                    fontSize: "16px",
+                    backgroundColor: "#f8b864",
+                  }}
                 >
                   Donate
                 </Button>

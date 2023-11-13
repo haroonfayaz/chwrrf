@@ -1,51 +1,35 @@
+import React from "react";
 import Navbar from "./Components/Navbar";
-import { useRoutes } from "react-router-dom";
+import { Route, Routes} from "react-router-dom";
 import Home from "./Pages/Home";
-import Team from "./Pages/Team";
-import Mission from "./Pages/Mission";
-import About from "./Pages/About";
-import Campaigns from "./Pages/Campaigns";
-import Volunteers from "./Pages/Volunteers";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import BlogPost from "./Pages/BlogPost";
 
 const theme = createTheme({
   typography: {
-    fontFamily: '"Jost", sans-serif', // Specify "Jost" as the primary font family
+    fontFamily: '"Jost", sans-serif',
   },
 });
 
 function App() {
-  const routes = useRoutes([
-    {
-      element: <Home />,
-      path: "/",
-    },
-    {
-      element: <About />,
-      path: "/about",
-    },
-    {
-      element: <Mission />,
-      path: "/mission",
-    },
-    {
-      element: <Team />,
-      path: "/team",
-    },
-    {
-      element: <Campaigns />,
-      path: "/campaigns",
-    },
-    {
-      element: <Volunteers />,
-      path: "/volunteers",
-    },
-  ]);
+  // const routes = useRoutes([
+  //   {
+  //     element: <Home />,
+  //     path: "/",
+  //   },
+  //   {
+  //     element: <BlogPost />,
+  //     path: "/blog",
+  //   },
+  // ]);
   return (
     <>
       <ThemeProvider theme={theme}>
         <Navbar />
-        {routes}
+        <Routes>
+          <Route exact path="/" element={<Home/>}/>
+          <Route exact path="/blog" element={<BlogPost/>}/>
+        </Routes>
       </ThemeProvider>
     </>
   );

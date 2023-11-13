@@ -9,7 +9,6 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import "../main.css";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import MobileScreenShareOutlinedIcon from "@mui/icons-material/MobileScreenShareOutlined";
 import MobileScreenShareOutlined from "@mui/icons-material/MobileScreenShareOutlined";
 
 const Footer = () => {
@@ -20,10 +19,11 @@ const Footer = () => {
         p: 4,
         backgroundImage: "url('/images/map.png')",
         backgroundColor: "#222",
-        backgroundPosition: "right 150px center",
+        backgroundPosition: "right 90px center",
         backgroundRepeat: "no-repeat",
         height: "100%",
-        width: "100%",
+        mb:3,
+        pb:3
       }}
     >
       <Grid container spacing={1}>
@@ -216,36 +216,42 @@ const Footer = () => {
               sx={{
                 pt: 2,
                 display: { xs: "block", md: "flex" },
+                alignItems: 'center', 
+
                 fontWeight: 500,
                 color: "#999",
               }}
             >
-              <MailOutlineIcon sx={{pr:2}}/> chwrrf@rediffmail.com
+              <MailOutlineIcon fontSize="large" sx={{pr:2,fontSize:"50px"}}/> chwrrf@rediffmail.com
             </Typography>
             <Typography
               variant="body1"
               sx={{
                 pt: 2,
                 display: { xs: "block", md: "flex" },
+                alignItems: 'center', 
                 fontWeight: 500,
                 color: "#999",
+
               }}
             >
-              <MobileScreenShareOutlined sx={{pr:2}}/>
-              +(91) 70069 60120{" "}
+              <MobileScreenShareOutlined sx={{pr:2,fontSize:"50px",}}/>
+              +(91) 70069 60120
             </Typography>
             <Typography
               variant="body1"
               sx={{
                 pt: 2,
                 display: { xs: "block", md: "flex" },
+                alignItems: 'center', 
+
                 fontWeight: 500,
                 color: "#999",
               }}
             >
-              <LocationOnOutlinedIcon sx={{pr:2}}/>
+              <LocationOnOutlinedIcon fontSize="large"  sx={{pr:2,fontSize:"50px"}}/>
               Habak Naseem Bagh, Hazratbal, Srinagar Jammu and Kashmir, India
-              Pin Code:190006{" "}
+              Pin Code:190006
             </Typography>
           </Box>
         </Grid>

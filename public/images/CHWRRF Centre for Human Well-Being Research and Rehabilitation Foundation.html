@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" style="" lang="en"><script type="text/javascript">// Promises 
+var _tp_promises = {};
+//Get Message From content script 
+window.addEventListener("message", function(event) { 
+		if(event.source !== window) return;			 
+		if(event.data.src && (event.data.src === "content.js")) { 
+			//console.log("Page received: "); 						
+			//console.log(event.data); 							
+			// Get the promise									
+			if(event.data.nonce) {								
+				 var p = _tp_promises[event.data.nonce]; 		
+				 // resolve										
+				 if(event.data.status_cd === 1){				
+					p.resolve(event.data.result);				
+				 }else{											
+				 // reject										
+					p.reject(new Error(event.data.result));		
+				 }												
+				 delete _tp_promises[event.data.nonce];			
+			}else {  											
+				console.log("No nonce in event msg");			
+			}													
+		}														
+	});															
+																
+    var SignerDigital= new TpCrypto();								
+	function TpCrypto (){										
+																
+	var OSName = GetOS();													
+	var OSSupported = (OSName == "Windows" || OSName == "Linux") ? true : false; 
+	function nonce() {											
+	  var val = ""; 										    
+	  var hex = "abcdefghijklmnopqrstuvwxyz0123456789";	         	
+	  for(var i = 0; i < 16; i++)							     	
+		val += hex.charAt(Math.floor(Math.random() * hex.length));	
+	  return val;											    	
+	}															
+																
+	function messagePromise(msg) { 								
+		return new Promise(async function(sdResolve, sdReject) { 			
+			if (msg["action"] == "GenCSR" || msg["action"] == "ImportCER")	
+			{																
+				if (!OSSupported)											
+				{																
+					sdReject(new Error(OSName + " OS Not Supported."));	
+					return;														
+				}																
+				if(!await checkSDEnrolledCA(msg["certIssuer"]))				
+				{															
+					sdReject(new Error("This Certifying Authority is not enrolled in Signer.Digital Browser Extension for Certificate Enrollment/Download. Contact your Certifying Authority."));	
+					return;													
+				}															
+			}																
+			if(msg["action"] == "GetSelCertAndSCSNUsingPKCS11" || msg["action"] == "UnlockSC")	
+			{																					
+			   if (!OSSupported)																
+			   {																				
+				 sdReject(new Error(OSName + " OS Not Supported."));							
+				 return;																		
+			   }																				
+				if(!(await checkSDEnrolledSCUnlockHost(msg["hostDomain"])))						
+				{																				
+					sdReject(new Error("This domain (" + msg["hostDomain"] +") is not enrolled in Signer.Digital Browser Extension for SmartCard Unlock Feature. Contact your Vendor."));	
+					return;																		
+				}																				
+			}																					
+			// amend with necessary metadata 					
+			msg["nonce"] = nonce(); 							
+			msg["src"] = "user_page.js"; 						
+			msg["browser"] = "firefox"; 						
+			// send message 									
+			window.postMessage(msg, "*"); 						
+			// and store promise callbacks 						
+			_tp_promises[msg.nonce] = {							
+				resolve: sdResolve, 								
+				reject: sdReject 									
+			}; 													
+		}); 													
+	}															
+																			
+	async function checkSDEnrolledCA(certIssuer)							
+	{																		
+		var caList = ["AD5HAb+Ij2mmK1hTWpGGdK/xbGLtpQDerMJx35zmSJI=",	//CISPL Signer.Digital DEMO	
+			//add Enrolled CA to this list	
+					  "VQyiIqC/d6dSmSBWTgqLxDZzb5x9eQMKBlO/MdxjeqM=",	//SafeScrypt sub-CA for RCAI 
+					  "s2fPQ4sVgi70hCFo9S5W2HIRXT7TXsX2CwNBcAHxdPk=",	//UAT - PantaSign CA 2014 
+					  "c78CYT7ESNyRXOOuIlAW2tjCb2mJabS3Z3mAC4JFrDM=",	//PantaSign CA 
+					  "e6Nrw12cao77xcpOWlMHt8TqsVBWkv10imJ1IxjN2Vw=",	//PantaSign<space> 
+					  "0vViQwEaMomrPzhpI0GjyG532UIjlT2Sb54DQCXt57o=",	//Verasys<space> 
+					  "IT/kNq1QApC7NaIMu3VKAib4cZF0ARInXp3zCDa2SIM="];	//IDSign sub CA for Consumers
+		const sha256OfIssuer = await SDGetSha256(certIssuer);				
+		if (caList.includes(sha256OfIssuer))								
+			return true;													
+		else																
+			return false;													
+	}																		
+	async function checkSDEnrolledSCUnlockHost(hostDomain)					
+	{																		
+		var ScUnlockDomainsList = ["SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2M=",  //localhost	 
+			//add licensed domains to this list 
+								   "No0nRCis0hkuq4SQoaG4B2ucGz6gT+MMpcHLBFP6jbU="];	//update.epasstokens.com  
+		const sha256OfHostDomain = await SDGetSha256(hostDomain);			
+		if (ScUnlockDomainsList.includes(sha256OfHostDomain))				
+			return true;													
+		else																
+			return false;													
+	}																		
+	async function SDGetSha256(message)										
+	{																		
+		// encode as UTF-8													
+		const msgBuffer = new TextEncoder().encode(message);				
+		// hash the message													
+		const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+		const bytes = new Uint8Array(hashBuffer);							
+		var binary = "";													
+		for (var i = 0; i < bytes.byteLength; i++) {						
+			binary += String.fromCharCode(bytes[i]);						
+		}																	
+		return window.btoa(binary);											
+	};																		
+																			
+	this.ConsoleLogging = function(Switch = "ON"){							
+		document.dispatchEvent(new CustomEvent("ConsoleLogging", {detail : Switch}));	
+	}																					
+	this.signGstHash = function(hash, certThumbPrint = "", x509RevocationMode = 0){										
+		var msg= { action:"SignHashCms", hash:hash, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};			
+		return messagePromise(msg);																
+	}																							
+	this.signITHash = function(hash, PAN, certThumbPrint = "", x509RevocationMode = 0){														
+		var msg= { action:"ITReturnSign", hash:hash, PAN:PAN, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};			
+		return messagePromise(msg);								
+	}															
+	this.signIceGate = function(b64Data, certThumbPrint = "", x509RevocationMode = 0){														
+		var msg= { action:"IceGateSignJson", b64Data:b64Data, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};			
+		return messagePromise(msg);								
+	}															
+	this.getSelectedCertificate = function(certThumbPrint = "", showExpired = false, keyUsageFilter = 128, x509RevocationMode = 0){					
+		var msg= { action:"GetSelCertFromToken", certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};				
+		return messagePromise(msg);								
+	}															
+	this.signPdfHash = function(hash, certThumbPrint, certAlgorithm, x509RevocationMode = 0){					
+		var msg= { action:"PdfSignFromToken", hash:hash,certThumbPrint:certThumbPrint,hashAlgorithm:certAlgorithm, x509RevocationMode:x509RevocationMode};		
+		return messagePromise(msg);								
+	}															
+	this.signAuthToken = function(authtoken, certAlgorithm, certThumbPrint = "", showExpired = false, x509RevocationMode = 0){					
+		var msg= { action:"SignAuthToken", authToken:authtoken, hashAlgorithm:certAlgorithm, certThumbPrint:certThumbPrint, showExpired:showExpired, x509RevocationMode:x509RevocationMode};		
+		return messagePromise(msg);								
+	}															
+	this.signHash = function(hash, certAlgorithm, certThumbPrint = "", x509RevocationMode = 0){					
+		var msg= { action:"SignHash", hash:hash, hashAlgorithm:certAlgorithm, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};		
+		return messagePromise(msg);								
+	}															
+	this.signHashCms = function(hash, certAlgorithm, certIncludeOptions = 2, certThumbPrint = "", x509RevocationMode = 0){		
+		var msg= { action:"SignHashCms", hash:hash, hashAlgorithm:certAlgorithm, certIncludeOptions:certIncludeOptions, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+		return messagePromise(msg);											
+	}																		
+	this.signHashCAdESBr = function(hash, certAlgorithm, certIncludeOptions = 2, certThumbPrint = "", x509RevocationMode = 0){		
+		var msg= { action:"SignCAdESBr", hash:hash, hashAlgorithm:certAlgorithm, certIncludeOptions:certIncludeOptions, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+		return messagePromise(msg);											
+	}																		
+	this.signHashCAdESEg = function(hash, certAlgorithm, certIncludeOptions = 2, certThumbPrint = "", x509RevocationMode = 0){		
+		var msg= { action:"SignCAdESEg", hash:hash, hashAlgorithm:certAlgorithm, certIncludeOptions:certIncludeOptions, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};	
+		return messagePromise(msg);											
+	}																		
+	this.signXML = function(xmlDoc, xmlSignParms, certThumbPrint, x509RevocationMode = 0){					
+		var msg= { action:"SignXML", xmlDoc:xmlDoc, xmlSignParms:xmlSignParms, certThumbPrint:certThumbPrint, x509RevocationMode:x509RevocationMode};		
+		return messagePromise(msg);								
+	}															
+	this.encryptB64Data = function(b64Data, useOAEPPadding, certThumbPrint = "", showExpired = false, keyUsageFilter = 32, x509RevocationMode = 0){					
+		var msg= { action:"EncryptB64Data", b64Data:b64Data, useOAEPPadding:useOAEPPadding, certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};		
+		return messagePromise(msg);								
+	}															
+	this.decryptB64Data = function(b64Data, useOAEPPadding, certThumbPrint = "", showExpired = false, keyUsageFilter = 32, x509RevocationMode = 0){					
+		var msg= { action:"DecryptB64Data", b64Data:b64Data, useOAEPPadding:useOAEPPadding, certThumbPrint:certThumbPrint, showExpired:showExpired, keyUsageFilter:keyUsageFilter, x509RevocationMode:x509RevocationMode};		
+		return messagePromise(msg);								
+	}															
+	this.getPCSCReaders = function(onlyConnected = true){				
+		var msg= { action:"GetPCSCReaders", onlyConnected:onlyConnected};			
+		return messagePromise(msg);											
+	}																		
+	this.genCSR = function(PKCS11Lib, certSubject, certIssuer, keyBits = 2048, hashAlgorithm = "SHA256", forceUserPinChangeIfDefault = false, extensions = null){				
+		var msg= { action:"GenCSR", PKCS11Lib:PKCS11Lib, certSubject:certSubject, certIssuer:certIssuer, keyBits:keyBits, hashAlgorithm:hashAlgorithm, forceUserPinChangeIfDefault:forceUserPinChangeIfDefault, extensions:extensions};			
+		return messagePromise(msg);											
+	}																		
+	this.importCer = function(PKCS11Lib, b64Payload, certIssuer){		
+		var msg= { action:"ImportCER", PKCS11Lib:PKCS11Lib, b64Data:b64Payload, certIssuer:certIssuer};		
+		return messagePromise(msg);											
+	}																		
+	this.getSelCertAndSCSNUsingPKCS11 = function(PKCS11Lib, hostDomain){		
+		var msg= { action:"GetSelCertAndSCSNUsingPKCS11", PKCS11Lib:PKCS11Lib, hostDomain:hostDomain};		
+		return messagePromise(msg);											
+	}																		
+	this.unlockSC = function(PKCS11Lib, soPIN, hostDomain){					
+		var msg= { action:"UnlockSC", PKCS11Lib:PKCS11Lib, soPIN: soPIN, hostDomain:hostDomain};   
+		return messagePromise(msg);											
+	}																		
+	this.getHostDetails = function(){										
+		var msg= { action:"GetHostDetails"};								
+		return messagePromise(msg);											
+	}																		
+	this.sm = function(msg){												
+		return messagePromise(msg);											
+	}																		
+	this.OSName = GetOS();													
+	this.OSSupported = (this.OSName == "Windows" || this.OSName == "Linux") ? true : false; 
+	this.getPkcsLibByProvider = function(ProviderName)								
+        {																	
+            let winHashMap = new Map([										
+                ["EnterSafe ePass2003 CSP v2.0", "eps2003csp11v2.dll"],		
+                ["eToken Base Cryptographic Provider", "eTPKCS11.dll"],		
+                ["PROXKey CSP India V1.0", "SignatureP11.dll"],				
+                ["Bit4id Universal Middleware Provider", "bit4ipki.dll"],	
+                ["mToken CryptoID CSP", "CryptoIDA_pkcs11.dll"] 			
+            ]);																
+            let linuxHashMap = new Map([									
+                ["EnterSafe ePass2003 CSP v2.0", "libcastle_v2.so.1.0.0"],					
+                ["eToken Base Cryptographic Provider", "libeTPkcs11.so"],				
+                ["PROXKey CSP India V1.0", "libwdpkcs_SignatureP11.so"],							
+                ["mToken CryptoID CSP", "libcryptoid_pkcs11.so"]							
+            ]);																
+			var providerNotEnrolledMsg = "Provider Not enrolled. Can still be used by passing pkcs#11 driver lib name in PKCS11Lib param."	 
+            if (this.OSName == "Windows") {										
+                if (ProviderName.startsWith("Microsoft"))					
+                    return ProviderName;									
+                else if (winHashMap.has(ProviderName))				
+                    return winHashMap.get(ProviderName);					
+				else														
+					return providerNotEnrolledMsg; 	
+            }																
+            if (this.OSName = "Linux") {											
+				if (linuxHashMap.has(ProviderName))							
+					return linuxHashMap.get(ProviderName);					
+				else														
+					return providerNotEnrolledMsg; 							
+			}																
+			else {															
+                return "OS Not Supported";									
+            }																
+        }																	
+	this.getPkcsLibBySCName = function(SCName)								
+        {																	
+            let winHashMap = new Map([										
+                ["HyperSecu ePass2003", "eps2003csp11v2.dll"],				
+                ["SafeNet eToken", "eTPKCS11.dll"],							
+                ["PROXKey Watchdata", "SignatureP11.dll"],					
+                ["Bit4id tokenME", "bit4ipki.dll"],							
+                ["Longmai mToken", "CryptoIDA_pkcs11.dll"]					
+            ]);																
+            let linuxHashMap = new Map([									
+                ["HyperSecu ePass2003", "libcastle_v2.so.1.0.0"],					
+                ["SafeNet eToken", "libeTPkcs11.so"],				
+                ["PROXKey Watchdata", "libwdpkcs_SignatureP11.so"],							
+                ["mToken CryptoID CSP", "libcryptoid_pkcs11.so"]							
+            ]);																
+			var SCNotEnrolledMsg = "Smartcard Not enrolled in Signer.Digital Browser Extension. Can still be used by passing pkcs#11 driver lib name in PKCS11Lib param."	 
+            if (this.OSName == "Windows") {										
+                if (SCName == "Windows Certificate Store")					
+                    return "Microsoft Enhanced RSA and AES Cryptographic Provider";									
+                else if (winHashMap.has(SCName))				
+                    return winHashMap.get(SCName);					
+				else														
+					return SCNotEnrolledMsg; 	
+            }																
+            if (this.OSName = "Linux") {											
+				if (linuxHashMap.has(SCName))							
+					return linuxHashMap.get(SCName);					
+				else														
+					return SCNotEnrolledMsg; 							
+			}																
+			else {															
+                return "OS Not Supported";									
+            }																
+        }																	
+	this.getSCNameByReaderName = function(ReaderName)								
+        {																	
+            let winHashMap = new Map([										
+                ["HYPERSECU USB TOKEN 0", "HyperSecu ePass2003"],			
+                ["FT ePass2003Auto 0", "HyperSecu ePass2003"],				
+				["feitian ePass2003 0", "HyperSecu ePass2003"],             
+                ["FS USB Token 0", "HyperSecu ePass2003"],					
+                ["AKS ifdh 0", "SafeNet eToken"],							
+                ["AKS ifdh 1", "SafeNet eToken"],							
+                ["SafeNet Token JC 0", "SafeNet eToken"],					
+                ["SafeNet Token JC 1", "SafeNet eToken"],					
+                ["Aladdin Token JC 0", "SafeNet eToken"],					
+                ["Aladdin Token JC 1", "SafeNet eToken"],					
+                ["Watchdata WDIND USB CCID Key 0", "PROXKey Watchdata"],	
+                ["Bit4id tokenME FIPS 0", "Bit4id tokenME"],				
+                ["Longmai mToken CryptoIDA 0", "Longmai mToken"]			
+            ]);																
+            let linuxHashMap = new Map([									
+                ["Feitian ePass2003", "HyperSecu ePass2003"],				
+                ["FT ePass2003Auto", "HyperSecu ePass2003"],				
+                ["SafeNet eToken 5100", "SafeNet eToken"],					
+                ["Watchdata USB Key", "PROXKey Watchdata"]					
+            ]);																
+            if (this.OSName == "Windows") {										
+                if (winHashMap.has(ReaderName))				
+                    return winHashMap.get(ReaderName);					
+				else														
+					return ReaderName; 	
+            }																
+            if (this.OSName = "Linux") {											
+				if (linuxHashMap.has(ReaderName))							
+					return linuxHashMap.get(ReaderName);					
+				else														
+					return ReaderName; 							
+			}																
+			else {															
+                return ReaderName;									
+            }																
+        }																	
+		function GetOS()													
+		{																	
+            if (navigator.appVersion.indexOf("Win") != -1) return "Windows";
+            else if (navigator.appVersion.indexOf("Mac") != -1) return "MacOS";	
+            else if (navigator.appVersion.indexOf("Linux") != -1) return "Linux";
+            else if (navigator.appVersion.indexOf("X11") != -1) return "UNIX";	
+			else return "Unknown OS";										
+		}																	
+}//End of TpCrypto class										
+</script><!--<![endif]--><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+        <meta name="author" content="DynamicLayers">
+       
+        <title>CHWRRF || Centre for Human Well-Being Research and Rehabilitation Foundation.</title>
+        
+		<link rel="shortcut icon" type="image/x-icon" href="file:///Users/nadymbaba/Documents/Workspace/chwrrf/img/favicon.png">
+
+        <!-- Font Awesome Icons CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/font-awesome.min.css">
+        <!-- Themify Icons CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/themify-icons.css">
+        <!-- Elegant Font Icons CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/elegant-font-icons.css">
+        <!-- Elegant Line Icons CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/elegant-line-icons.css">
+		<!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/bootstrap.min.css">
+		<!-- Venobox CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/venobox.css">
+		<!-- OWL-Carousel CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/owl.carousel.css">
+        <!-- Slick Nav CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slicknav.min.css">
+        <!-- Css Animation CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/css-animation.min.css">
+        <!-- Nivo Slider CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/nivo-slider.css">
+		<!-- Main CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/main.css">
+		<!-- Responsive CSS -->
+        <link rel="stylesheet" href="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/responsive.css">
+        <style>
+            html {
+  scroll-behavior: smooth;
+}
+        </style>
+        <script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    </head>
+    <body class="loaded">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <div class="site-preloader-wrap">
+            <div class="spinner"></div>
+        </div><!-- Preloader -->
+        
+        <header id="header" class="header-section navbar-fixed-top fadeInTop cssanimation animated">
+            <!-- <div class="top-header">
+                <div class="container">
+                    <div class="top-content-wrap row">
+                         <div class="col-sm-8">
+                            <ul class="left-info">
+                                <li><a href="#"><i class="ti-email"></i>Info@YourDomain.com</a></li>
+                                <li><a href="#"><i class="ti-mobile"></i>+(333) 052 39876</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4 d-none d-md-block">
+                            <ul class="right-info">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div> 
+                    </div>
+                </div>
+            </div> -->
+            <div class="bottom-header">
+                <div class="container">
+                    <div class="bottom-content-wrap row">
+                        <div class="col-sm-4">
+                            <div class="site-branding"><div class="slicknav_menu"><a href="#" aria-haspopup="true" role="button" tabindex="0" class="slicknav_btn slicknav_collapsed" style="outline: none;"><span class="slicknav_menutxt"></span><span class="slicknav_icon slicknav_no-text"><span class="slicknav_icon-bar"></span><span class="slicknav_icon-bar"></span><span class="slicknav_icon-bar"></span></span></a><ul class="slicknav_nav slicknav_hidden" style="display: none;" aria-hidden="true" role="menu">
+                                <li class="active"> <a href="file:///Users/nadymbaba/Documents/Workspace/chwrrf/index.html" role="menuitem" tabindex="-1">Home</a>
+                                   <!--  <ul>
+                                       <li><a href="index.html">Home Default</a></li>
+                                       <li><a href="index-2.html">Home Modern</a></li>
+                                    </ul> -->
+                                </li>
+                                <li><a href="#about" role="menuitem" tabindex="-1">About</a></li>
+                                <li><a href="#mission" role="menuitem" tabindex="-1">Mission</a></li>
+                                <li><a href="#volunteers" role="menuitem" tabindex="-1">Volunteers</a></li>
+                                <li><a href="#team" role="menuitem" tabindex="-1">Team</a></li>
+                                <li><a href="#campaigns" role="menuitem" tabindex="-1">Campaigns</a></li>
+                                <!-- <li><a href="event.html">Event</a></li> -->
+                                <!-- <li><a href="#">Pages</a> 
+                                    <ul>
+                                       <li><a href="gallery.html">Gallery</a></li>
+                                       <li><a href="team.html">Volunteers</a></li>
+                                       <li><a href="404.html">404 Not Found</a></li>
+                                    </ul>
+                                </li> -->
+                               <!--  <li><a href="blog-grid.html">Blog</a> 
+                                    <ul>
+                                       <li><a href="blog-grid.html">Blog Grid</a></li>
+                                       <li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
+                                       <li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
+                                       <li><a href="blog-single.html">Blog Single</a></li>
+                                    </ul>
+                                </li> -->
+                            </ul></div>
+                                <a href="#"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/logo-3.png" alt="Brand"></a>
+                            </div>
+                        </div>
+                       <div class="col-sm-8 text-right">
+                           <ul id="mainmenu" class="nav navbar-nav nav-menu">
+                                <li class="active"> <a href="file:///Users/nadymbaba/Documents/Workspace/chwrrf/index.html">Home</a>
+                                   <!--  <ul>
+                                       <li><a href="index.html">Home Default</a></li>
+                                       <li><a href="index-2.html">Home Modern</a></li>
+                                    </ul> -->
+                                </li>
+                                <li><a href="#about">About</a></li>
+                                <li><a href="#mission">Mission</a></li>
+                                <li><a href="#volunteers">Volunteers</a></li>
+                                <li><a href="#team">Team</a></li>
+                                <li><a href="#campaigns">Campaigns</a></li>
+                                <!-- <li><a href="event.html">Event</a></li> -->
+                                <!-- <li><a href="#">Pages</a> 
+                                    <ul>
+                                       <li><a href="gallery.html">Gallery</a></li>
+                                       <li><a href="team.html">Volunteers</a></li>
+                                       <li><a href="404.html">404 Not Found</a></li>
+                                    </ul>
+                                </li> -->
+                               <!--  <li><a href="blog-grid.html">Blog</a> 
+                                    <ul>
+                                       <li><a href="blog-grid.html">Blog Grid</a></li>
+                                       <li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
+                                       <li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
+                                       <li><a href="blog-single.html">Blog Single</a></li>
+                                    </ul>
+                                </li> -->
+                            </ul>
+                            <a href="#donate" data-scroll="" class="default-btn">Donate Now</a>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </header><!-- /Header Section -->
+        
+        <div class="header-height" style="height: 87px;"></div>
+        
+        <section class="slider-section">
+            <div class="slider-wrapper">
+                <div id="main-slider" class="nivoSlider">
+                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" alt="" title="#slider-caption-1" style="width: 1680px; visibility: hidden;">
+                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-2.jpg" alt="" title="#slider-caption-2" style="width: 1680px; visibility: hidden;">
+                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-3.jpg" alt="" title="#slider-caption-3" style="width: 1680px; visibility: hidden;">
+                <img class="nivo-main-image" src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="display: inline; height: 707px;"><div class="nivo-caption" style="display: block;">
+                    <div class="display-table">
+                        <div class="table-cell">
+                            <div class="container">
+                               <div class="slider-text">
+                                   <h5 class="wow cssanimation fadeInBottom  animated" style="visibility: visible; animation-name: bfadeInBottom;">Join Us Today</h5>
+                                   <h1 class="wow cssanimation leFadeInRight sequence animated animated" style="visibility: visible;"><span style="animation-delay:100ms; -moz-animation-delay:100ms; -webkit-animation-delay:100ms; " class="">B</span><span style="animation-delay:250ms; -moz-animation-delay:250ms; -webkit-animation-delay:250ms; " class="">e</span><span style="animation-delay:400ms; -moz-animation-delay:400ms; -webkit-animation-delay:400ms; " class="">t</span><span style="animation-delay:550ms; -moz-animation-delay:550ms; -webkit-animation-delay:550ms; " class="">t</span><span style="animation-delay:700ms; -moz-animation-delay:700ms; -webkit-animation-delay:700ms; " class="">e</span><span style="animation-delay:850ms; -moz-animation-delay:850ms; -webkit-animation-delay:850ms; " class="">r</span> <span style="animation-delay:1000ms; -moz-animation-delay:1000ms; -webkit-animation-delay:1000ms; " class="">L</span><span style="animation-delay:1150ms; -moz-animation-delay:1150ms; -webkit-animation-delay:1150ms; " class="">i</span><span style="animation-delay:1300ms; -moz-animation-delay:1300ms; -webkit-animation-delay:1300ms; " class="">f</span><span style="animation-delay:1450ms; -moz-animation-delay:1450ms; -webkit-animation-delay:1450ms; " class="">e</span> <span style="animation-delay:1600ms; -moz-animation-delay:1600ms; -webkit-animation-delay:1600ms; " class="">f</span><span style="animation-delay:1750ms; -moz-animation-delay:1750ms; -webkit-animation-delay:1750ms; " class="">o</span><span style="animation-delay:1900ms; -moz-animation-delay:1900ms; -webkit-animation-delay:1900ms; " class="">r</span> <span style="animation-delay:2050ms; -moz-animation-delay:2050ms; -webkit-animation-delay:2050ms; " class="">P</span><span style="animation-delay:2200ms; -moz-animation-delay:2200ms; -webkit-animation-delay:2200ms; " class="">e</span><span style="animation-delay:2350ms; -moz-animation-delay:2350ms; -webkit-animation-delay:2350ms; " class="">o</span><span style="animation-delay:2500ms; -moz-animation-delay:2500ms; -webkit-animation-delay:2500ms; " class="">p</span><span style="animation-delay:2650ms; -moz-animation-delay:2650ms; -webkit-animation-delay:2650ms; " class="">l</span><span style="animation-delay:2800ms; -moz-animation-delay:2800ms; -webkit-animation-delay:2800ms; " class="">e</span></h1>
+                                    <p class="wow cssanimation fadeInTop  animated" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: bfadeInTop;">Help today because tomorrow you may be the one who needs helping! <br>Forget what you can get and see what you can give.</p>
+                                    <!-- <a href="#" class="default-btn wow cssanimation fadeInBottom" data-wow-delay="0.8s">Join With Us</a> -->
+                                    <a href="#" class="default-btn wow cssanimation fadeInBottom  animated" data-wow-delay="0.8s" style="visibility: visible; animation-delay: 0.8s; animation-name: bfadeInBottom;">Donate Now</a>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div><div class="nivo-directionNav"><a class="nivo-prevNav"><i class="ti-arrow-left"></i></a><a class="nivo-nextNav"><i class="ti-arrow-right"></i></a></div><div class="nivo-box" name="0" rel="0" style="opacity: 1; left: 0px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-0px;"></div><div class="nivo-box" name="1" rel="0" style="opacity: 1; left: 210px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-210px;"></div><div class="nivo-box" name="2" rel="0" style="opacity: 1; left: 420px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-420px;"></div><div class="nivo-box" name="3" rel="0" style="opacity: 1; left: 630px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-630px;"></div><div class="nivo-box" name="4" rel="0" style="opacity: 1; left: 840px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-840px;"></div><div class="nivo-box" name="5" rel="0" style="opacity: 1; left: 1050px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-1050px;"></div><div class="nivo-box" name="6" rel="0" style="opacity: 1; left: 1260px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-1260px;"></div><div class="nivo-box" name="7" rel="0" style="opacity: 1; left: 1470px; top: 0px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-0px; left:-1470px;"></div><div class="nivo-box" name="0" rel="1" style="opacity: 1; left: 0px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-0px;"></div><div class="nivo-box" name="1" rel="1" style="opacity: 1; left: 210px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-210px;"></div><div class="nivo-box" name="2" rel="1" style="opacity: 1; left: 420px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-420px;"></div><div class="nivo-box" name="3" rel="1" style="opacity: 1; left: 630px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-630px;"></div><div class="nivo-box" name="4" rel="1" style="opacity: 1; left: 840px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-840px;"></div><div class="nivo-box" name="5" rel="1" style="opacity: 1; left: 1050px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-1050px;"></div><div class="nivo-box" name="6" rel="1" style="opacity: 1; left: 1260px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-1260px;"></div><div class="nivo-box" name="7" rel="1" style="opacity: 1; left: 1470px; top: 177px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-177px; left:-1470px;"></div><div class="nivo-box" name="0" rel="2" style="opacity: 1; left: 0px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-0px;"></div><div class="nivo-box" name="1" rel="2" style="opacity: 1; left: 210px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-210px;"></div><div class="nivo-box" name="2" rel="2" style="opacity: 1; left: 420px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-420px;"></div><div class="nivo-box" name="3" rel="2" style="opacity: 1; left: 630px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-630px;"></div><div class="nivo-box" name="4" rel="2" style="opacity: 1; left: 840px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-840px;"></div><div class="nivo-box" name="5" rel="2" style="opacity: 1; left: 1050px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-1050px;"></div><div class="nivo-box" name="6" rel="2" style="opacity: 1; left: 1260px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-1260px;"></div><div class="nivo-box" name="7" rel="2" style="opacity: 1; left: 1470px; top: 354px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-354px; left:-1470px;"></div><div class="nivo-box" name="0" rel="3" style="opacity: 1; left: 0px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-0px;"></div><div class="nivo-box" name="1" rel="3" style="opacity: 1; left: 210px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-210px;"></div><div class="nivo-box" name="2" rel="3" style="opacity: 1; left: 420px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-420px;"></div><div class="nivo-box" name="3" rel="3" style="opacity: 1; left: 630px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-630px;"></div><div class="nivo-box" name="4" rel="3" style="opacity: 1; left: 840px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-840px;"></div><div class="nivo-box" name="5" rel="3" style="opacity: 1; left: 1050px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-1050px;"></div><div class="nivo-box" name="6" rel="3" style="opacity: 1; left: 1260px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-1260px;"></div><div class="nivo-box" name="7" rel="3" style="opacity: 1; left: 1470px; top: 531px; width: 210px; height: 707px;"><img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/slider-1.jpg" style="position:absolute; width:1680px; height:auto; display:block; top:-531px; left:-1470px;"></div></div><!-- /#main-slider -->
+
+                <div id="slider-caption-1" class="nivo-html-caption slider-caption">
+                    <div class="display-table">
+                        <div class="table-cell">
+                            <div class="container">
+                               <div class="slider-text">
+                                   <h5 class="wow cssanimation fadeInBottom animated" style="visibility: visible; animation-name: bfadeInBottom;">Join Us Today</h5>
+                                   <h1 class="wow cssanimation leFadeInRight sequence animated" style="visibility: visible;"><span style="animation-delay:100ms; -moz-animation-delay:100ms; -webkit-animation-delay:100ms; ">B</span><span style="animation-delay:250ms; -moz-animation-delay:250ms; -webkit-animation-delay:250ms; ">e</span><span style="animation-delay:400ms; -moz-animation-delay:400ms; -webkit-animation-delay:400ms; ">t</span><span style="animation-delay:550ms; -moz-animation-delay:550ms; -webkit-animation-delay:550ms; ">t</span><span style="animation-delay:700ms; -moz-animation-delay:700ms; -webkit-animation-delay:700ms; ">e</span><span style="animation-delay:850ms; -moz-animation-delay:850ms; -webkit-animation-delay:850ms; ">r</span> <span style="animation-delay:1000ms; -moz-animation-delay:1000ms; -webkit-animation-delay:1000ms; ">L</span><span style="animation-delay:1150ms; -moz-animation-delay:1150ms; -webkit-animation-delay:1150ms; ">i</span><span style="animation-delay:1300ms; -moz-animation-delay:1300ms; -webkit-animation-delay:1300ms; ">f</span><span style="animation-delay:1450ms; -moz-animation-delay:1450ms; -webkit-animation-delay:1450ms; ">e</span> <span style="animation-delay:1600ms; -moz-animation-delay:1600ms; -webkit-animation-delay:1600ms; ">f</span><span style="animation-delay:1750ms; -moz-animation-delay:1750ms; -webkit-animation-delay:1750ms; ">o</span><span style="animation-delay:1900ms; -moz-animation-delay:1900ms; -webkit-animation-delay:1900ms; ">r</span> <span style="animation-delay:2050ms; -moz-animation-delay:2050ms; -webkit-animation-delay:2050ms; ">P</span><span style="animation-delay:2200ms; -moz-animation-delay:2200ms; -webkit-animation-delay:2200ms; ">e</span><span style="animation-delay:2350ms; -moz-animation-delay:2350ms; -webkit-animation-delay:2350ms; ">o</span><span style="animation-delay:2500ms; -moz-animation-delay:2500ms; -webkit-animation-delay:2500ms; ">p</span><span style="animation-delay:2650ms; -moz-animation-delay:2650ms; -webkit-animation-delay:2650ms; ">l</span><span style="animation-delay:2800ms; -moz-animation-delay:2800ms; -webkit-animation-delay:2800ms; ">e</span></h1>
+                                    <p class="wow cssanimation fadeInTop animated" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: bfadeInTop;">Help today because tomorrow you may be the one who needs helping! <br>Forget what you can get and see what you can give.</p>
+                                    <!-- <a href="#" class="default-btn wow cssanimation fadeInBottom" data-wow-delay="0.8s">Join With Us</a> -->
+                                    <a href="#" class="default-btn wow cssanimation fadeInBottom animated" data-wow-delay="0.8s" style="visibility: visible; animation-delay: 0.8s; animation-name: bfadeInBottom;">Donate Now</a>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div> <!-- /#slider-caption-1 -->
+                <div id="slider-caption-2" class="nivo-html-caption slider-caption">
+                    <div class="display-table">
+                        <div class="table-cell">
+                            <div class="container">
+                               <div class="slider-text">
+                                    <h1 class="wow cssanimation fadeInTop animated" data-wow-delay="1s" data-wow-duration="800ms" style="visibility: visible; animation-duration: 800ms; animation-delay: 1s; animation-name: bfadeInTop;">Together we  <br>can make a Difference</h1>
+                                    <p class="wow cssanimation fadeInBottom animated" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: bfadeInBottom;">Help today because tomorrow you may be the one who needs helping! <br>Forget what you can get and see what you can give.</p>
+                                    <!-- <a href="#" class="default-btn wow cssanimation fadeInBottom" data-wow-delay="0.8s">Join With Us</a> -->
+                                    <a href="#" class="default-btn wow cssanimation fadeInBottom animated" data-wow-delay="0.8s" style="visibility: visible; animation-delay: 0.8s; animation-name: bfadeInBottom;">Donate Now</a>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div> <!-- /#slider-caption-2 -->
+                <div id="slider-caption-3" class="nivo-html-caption slider-caption">
+                    <div class="display-table">
+                        <div class="table-cell">
+                            <div class="container">
+                               <div class="slider-text">
+                                    <h5 class="wow cssanimation fadeInBottom animated" style="visibility: visible; animation-name: bfadeInBottom;">Join Us Today</h5>
+                                    <h1 class="wow cssanimation lePushReleaseFrom sequence animated" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s;"><span style="animation-delay:100ms; -moz-animation-delay:100ms; -webkit-animation-delay:100ms; ">G</span><span style="animation-delay:250ms; -moz-animation-delay:250ms; -webkit-animation-delay:250ms; ">i</span><span style="animation-delay:400ms; -moz-animation-delay:400ms; -webkit-animation-delay:400ms; ">v</span><span style="animation-delay:550ms; -moz-animation-delay:550ms; -webkit-animation-delay:550ms; ">e</span> <span style="animation-delay:700ms; -moz-animation-delay:700ms; -webkit-animation-delay:700ms; ">a</span> <span style="animation-delay:850ms; -moz-animation-delay:850ms; -webkit-animation-delay:850ms; ">l</span><span style="animation-delay:1000ms; -moz-animation-delay:1000ms; -webkit-animation-delay:1000ms; ">i</span><span style="animation-delay:1150ms; -moz-animation-delay:1150ms; -webkit-animation-delay:1150ms; ">t</span><span style="animation-delay:1300ms; -moz-animation-delay:1300ms; -webkit-animation-delay:1300ms; ">t</span><span style="animation-delay:1450ms; -moz-animation-delay:1450ms; -webkit-animation-delay:1450ms; ">l</span><span style="animation-delay:1600ms; -moz-animation-delay:1600ms; -webkit-animation-delay:1600ms; ">e</span><span style="animation-delay:1750ms; -moz-animation-delay:1750ms; -webkit-animation-delay:1750ms; ">.</span> <span style="animation-delay:1900ms; -moz-animation-delay:1900ms; -webkit-animation-delay:1900ms; ">C</span><span style="animation-delay:2050ms; -moz-animation-delay:2050ms; -webkit-animation-delay:2050ms; ">h</span><span style="animation-delay:2200ms; -moz-animation-delay:2200ms; -webkit-animation-delay:2200ms; ">a</span><span style="animation-delay:2350ms; -moz-animation-delay:2350ms; -webkit-animation-delay:2350ms; ">n</span><span style="animation-delay:2500ms; -moz-animation-delay:2500ms; -webkit-animation-delay:2500ms; ">g</span><span style="animation-delay:2650ms; -moz-animation-delay:2650ms; -webkit-animation-delay:2650ms; ">e</span> <span style="animation-delay:2800ms; -moz-animation-delay:2800ms; -webkit-animation-delay:2800ms; ">a</span> <span style="animation-delay:2950ms; -moz-animation-delay:2950ms; -webkit-animation-delay:2950ms; ">l</span><span style="animation-delay:3100ms; -moz-animation-delay:3100ms; -webkit-animation-delay:3100ms; ">o</span><span style="animation-delay:3250ms; -moz-animation-delay:3250ms; -webkit-animation-delay:3250ms; ">t</span><span style="animation-delay:3400ms; -moz-animation-delay:3400ms; -webkit-animation-delay:3400ms; ">.</span></h1>
+                                    <p class="wow cssanimation fadeInTop animated" data-wow-delay="1s" style="visibility: visible; animation-delay: 1s; animation-name: bfadeInTop;">Help today because tomorrow you may be the one who needs helping! <br>Forget what you can get and see what you can give.</p>
+                                   <!--  <a href="#" class="default-btn wow cssanimation fadeInBottom" data-wow-delay="0.8s">Join With Us</a> -->
+                                    <a href="#" class="default-btn wow cssanimation fadeInBottom animated" data-wow-delay="0.8s" style="visibility: visible; animation-delay: 0.8s; animation-name: bfadeInBottom;">Donate Now</a>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div> <!-- /#slider-caption-3 -->
+            </div>
+        </section><!-- /#slider-Section -->
+        
+        <section class="promo-section bd-bottom">
+            <div class="promo-wrap">
+               <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6 xs-padding">
+                            <div class="promo-content">
+                                <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/icon-1.png" alt="prmo icon">
+                                <h3>Make Donation</h3>
+                                <p>Your donation will make a difference 
+to so many people in the community and help create a brighter, more 
+prosperous future for everyone.</p>
+                                <!-- <a href="#">Read More</a> -->
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 xs-padding">
+                            <div class="promo-content">
+                                <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/icon-2.png" alt="prmo icon">
+                                <h3>Fundraising</h3>
+                                <p>It takes a lot of dedication, hard 
+work and initiative to make your fundraising campaign a success. That's 
+why we need your help in fundraising for our charity. </p>
+                               <!--  <a href="#">Read More</a> -->
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 xs-padding">
+                            <div class="promo-content">
+                                <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/icon-3.png" alt="prmo icon">
+                                <h3>Become A Volunteer</h3>
+                                <p>Volunteering with our charity is an 
+incredibly rewarding experience. You can witness first-hand the 
+difference that can be made by volunteering.  </p>
+                               <!--  <a href="#">Read More</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- /Promo Section -->
+        
+       <section class="causes-section bg-grey bd-bottom padding" id="about">
+            <div class="container">
+                <div class="section-heading text-center mb-40">
+                    <h2>About Us</h2>
+                    <span class="heading-border"></span>
+<!--                     <p>Help today because tomorrow you may be the one who <br> needs more helping!</p>
+ -->                </div>
+                <div class="causes-wrap row">
+                    <div class="col-md-12 xs-padding">
+                        <div class="causes-content">
+                           <!-- <div class="causes-thumb">
+                                <img src="img/causes-1.jpg" alt="causes">
+                                <a href="#" class="donate-btn">Donate Now<i class="ti-plus"></i></a>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><span class="wow cssanimation fadeInLeft">25%</span></div>
+                                </div>
+                           </div> -->
+                            <div class="causes-details">
+                               <!-- <h3> First charity activity of this summer.</h3> -->
+                                <p>The “Centre for Human Well-being 
+Research and Rehabilitation Foundation” is a Non-Profit Organization 
+working since last 5 years  dedicated to help the Poor and needy people 
+in terms of Skill Development &amp; livelihood, Education, Health, 
+sports, Water, sanitation &amp; Hygiene (WASH), Environment, Disaster 
+Risk reduction, Response management (DRRM), Gender &amp; inclusion, 
+child protection, Early childhood care &amp; development (ECCD) women 
+empowerment and other financial assistance across Jammu &amp; Kashmir. 
+The organization is Non-Governmental and Non-Religious organization. The
+ Foundation has a continuous goal to focus on the challenges which the 
+needy people especially women face and to provide our support to them. 
+The Foundation provides financial aid to the needy (could be a student, 
+single mother/father, sick, poor or anyone else) who has a real and 
+genuine need. Centre for Human Well-being Research and Rehabilitation 
+Foundation is a Charity Foundation deeply involved in helping poor and 
+needy people across Jammu and Kashmir to make a positive difference in 
+their lives. Centre for Human Well-being Research &amp; Rehabilitation 
+Foundation has been started with this sole purpose as a charity 
+foundation and is striving hard to make a positive difference in 
+peoples’ lives with the slogan<br> <b>“A step towards Change”.</b></p>
+                                <!-- div class="donation-box">
+                                    <p><i class="ti-bar-chart"></i>Goal: $45000</p>
+                                    <p><i class="ti-thumb-up"></i>Raised: $5000</p>
+                                </div>
+                                <a href="#" class="read-more">Read More</a> -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+        <!-- <section class="about-section bg-grey bd-bottom padding">
+            <div class="container">
+                <div class="row about-wrap">
+                    <div class="col-md-6 xs-padding">
+                        <div class="about-image">
+                            <img src="img/about.jpg" alt="about image">
+                        </div>
+                    </div> 
+                    <div class="col-md-12 xs-padding">
+                        <div class="about-content">
+                            <h2>About Us.</h2>
+                            <p>The “Centre for Human Well-being Research and Rehabilitation Foundation” is a Non-Profit Organization working since last 5 years  dedicated to help the Poor and needy people in terms of Skill Development & livelihood, Education, Health, sports, Water, sanitation & Hygiene (WASH), Environment, Disaster Risk reduction, Response management (DRRM), Gender & inclusion, child protection, Early childhood care & development (ECCD) women empowerment and other financial assistance across Jammu & Kashmir. The organization is Non-Governmental and Non-Religious organization. The Foundation has a continuous goal to focus on the challenges which the needy people especially women face and to provide our support to them. The Foundation provides financial aid to the needy (could be a student, single mother/father, sick, poor or anyone else) who has a real and genuine need. Centre for Human Well-being Research and Rehabilitation Foundation is a Charity Foundation deeply involved in helping poor and needy people across Jammu and Kashmir to make a positive difference in their lives. Centre for Human Well-being Research & Rehabilitation Foundation has been started with this sole purpose as a charity foundation and is striving hard to make a positive difference in peoples’ lives with the slogan “A step towards Change”.</p>
+                            <a href="#" class="default-btn">More About Us</a> 
+                        </div>
+                    </div>
+                </div> -->
+            
+        
+        <section class="about-section bd-bottom shape circle padding" id="mission">
+            <div class="container">
+                <div class="row">
+                   <div class="col-md-4 xs-padding">
+                        <div class="profile-wrap">
+                            <img class="profile" src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/profile-2.jpg" alt="profile">
+                            <h3>Dr. Bilal Ahmad Khan <span>Founder &amp; Chairman of CHWRRF.</span></h3>
+                            <p>BBA, MSW, PhD.</p>
+                            <p>Social Audit Coordinator- PM POSHAN Scheme<br>Fellow- Tribal Research Institute<br>Doctoral Fellow- Indian Council of Social Science Research<br>Research Assistant- Indian Council of Social Science Research<br>L7 Trainer – Quess Corp Formerly IKYA Human Capital solutions Pvt. Ltd.</p>
+                            <!-- <img src="img/sign.png" alt="sign"> -->
+                        </div>
+                    </div>
+                    <div class="col-md-8 xs-padding">
+                        <div class="about-wrap row">
+                            <div class="col-md-6 xs-padding">
+                                <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/history.jpg" alt="about-thumb">
+                                <h3>Our Mission</h3>
+                                <p>Centre for Human Well-Being Research 
+and Rehabilitation Foundation serves as a way to bring justice, balance 
+and kindness to every society and community</p>
+                                <!-- <a href="#" class="default-btn">Read More</a> -->
+                            </div>
+                            <div class="col-md-6 xs-padding">
+                                <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/mission.jpg" alt="about-thumb">
+                                <h3>Our Vision</h3>
+                                <p>Our Vision is working for the good of
+ others at the expense of one's interest and to ensure that human beings
+ are not deprived of their basic needs for survival.
+                                </p>
+                                <!-- <a href="#" class="default-btn">Read More</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- /Causes Section -->
+        
+        <!-- <section class="campaigns-section bd-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 xs-padding">
+                        <div class="campaigns-wrap">
+                            <h4>Featured Campaigns</h4>
+                            <h2>Featured project to built a School.</h2>
+                            <p>The secret to happiness lies in helping others. Never underestimate the difference YOU can make in the lives of the poor, the abused and the helpless.</p>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 35%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><span class="wow cssanimation fadeInLeft">35%</span></div>
+                            </div>
+                            <div class="donation-box">
+                                <h3><i class="ti-bar-chart"></i>Goal: $450000</h3>
+                                <h3><i class="ti-thumb-up"></i>Raised: $55000</h3>
+                            </div>
+                            <a href="#" class="default-btn">Donate Now</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 xs-padding">
+                        <div class="video-wrap">
+                            <img src="img/video.jpg" alt="video">
+                            <div class="play">
+                                <a class="img-popup" data-autoplay="true" data-vbtype="video" href="https://www.youtube.com/watch?v=_IlLwfC2dNc"><i class="ti-control-play"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> --><!-- /Featured Campaigns Section -->
+        <section class="team-section bg-grey bd-bottom circle shape padding" id="volunteers">
+            <div class="container">
+                <div class="section-heading text-center mb-40">
+                    <h2>Meet Out Volunteers</h2>
+                    <span class="heading-border"></span>
+                    <p>Help today because tomorrow you may be the one who <br> needs more helping!</p>
+                </div><!-- /Section Heading -->
+                <div class="team-wrapper row">
+                    <div class="col-lg-6 sm-padding">
+                        <div class="team-wrap row">
+                            <div class="col-md-6">
+                                <div class="team-details">
+                                   <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-1.jpg" alt="team">
+                                    <div class="hover">
+                                        <h3>Joseph Mathew <span>Zonal Coordinator-
+                                            Family Strengthening Program
+                                            SOS Children's Villages of India </span></h3>
+                                    </div>
+                                </div>
+                            </div><!-- /Team-1 -->
+                            <div class="col-md-6">
+                                <div class="team-details">
+                                   <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-2.jpg" alt="team">
+                                    <div class="hover">
+                                        <h3>Dr. Aadil Bashir Wani
+                                            <span>Sr.Assistant Professor Social work
+                                                University of Kashmir	
+                                                Child Rights Expert	</span></h3>
+                                    </div>
+                                </div>
+                            </div><!-- /Team-2 -->
+                            <div class="col-md-6">
+                                <div class="team-details">
+                                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-3.png" alt="team">
+                                    <div class="hover">
+                                        <h3>Dr. Faroze Ahmad Khan
+                                            <span>Gastroenterologist
+                                                Health Deptt. J&amp;K
+                                                Health Expert
+                                                </span></h3>
+                                    </div>
+                                </div>
+                            </div><!-- /Team-3 -->
+                            <div class="col-md-6">
+                                <div class="team-details">
+                                   <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-4.jpg" alt="team">
+                                    <div class="hover">
+                                        <h3>Alfred Gnanaolivu <span>Consultant at Freelance Consultancy &amp; Training
+                                            Eco Foundation for Social Alternative EFSA)
+                                            Bengaluru, Karnataka, India
+                                            </span></h3>
+                                    </div>
+                                </div>
+                            </div><!-- /Team-4 -->
+                        </div>
+                    </div>
+                    <div class="col-lg-6 sm-padding">
+                        <div class="team-content">
+                            <h2>Become a Volunteer?</h2>
+                            <h3>Join your hand with us for a better life and beautiful future.</h3>
+                            <p>The secret to happiness lies in helping 
+others. Never underestimate the difference YOU can make in the lives of 
+the poor, the abused and the helpless.</p>
+                            <ul class="check-list">
+                                <li><i class="fa fa-check"></i>We are friendly to each other.</li>
+                                <li><i class="fa fa-check"></i>If you join with us,We will give you free training.</li>
+                                <li><i class="fa fa-check"></i>Its an opportunity to help poor children.</li>
+                                <li><i class="fa fa-check"></i>No goal requirements.</li>
+                                <li><i class="fa fa-check"></i>Joining is tottaly free. We dont need any money from you.</li>
+                            </ul>
+                            <a href="#" class="default-btn">Join With Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- /Team Section -->
+        
+        <!--<section id="counter" class="counter-section">
+		    <div class="container">
+                <ul class="row counters">
+                    <li class="col-md-3 col-sm-6 sm-padding">
+                        <div class="counter-content">
+                            <i class="ti-money"></i>
+                            <h3 class="counter">100000</h3>
+                            <h4 class="text-white">Money Donated</h4>
+                        </div>
+                    </li>
+                    <li class="col-md-3 col-sm-6 sm-padding">
+                        <div class="counter-content">
+                            <i class="ti-face-smile"></i>
+                            <h3 class="counter">5</h3>
+                            <h4 class="text-white">Volunteer Around The World</h4>
+                        </div>
+                    </li>
+                    <li class="col-md-3 col-sm-6 sm-padding">
+                        <div class="counter-content">
+                            <i class="ti-user"></i>
+                            <h3 class="counter">100</h3>
+                            <h4 class="text-white">People Impacted</h4>
+                        </div>
+                    </li>
+                    <li class="col-md-3 col-sm-6 sm-padding">
+                        <div class="counter-content">
+                            <i class="ti-comments"></i>
+                            <h3 class="counter">100</h3>
+                            <h4 class="text-white">Positive Feedbacks</h4>
+                        </div>
+                    </li>
+                </ul>
+		    </div>
+		</section>Counter Section -->
+       
+        <!--<section class="events-section bg-grey bd-bottom padding">
+           <div class="container">
+                <div class="section-heading text-center mb-40">
+                    <h2>Upcoming Events</h2>
+                    <span class="heading-border"></span>
+                    <p>Help today because tomorrow you may be the one who <br> needs more helping!</p>
+                </div>
+                <div id="event-carousel" class="events-wrap owl-Carousel">
+                    <div class="events-item">
+                        <div class="event-thumb">
+                           <img src="img/events-1.jpg" alt="events">
+                        </div>
+                        <div class="event-details">
+                            <h3>Let's talk about the poor children.</h3>
+                            <div class="event-info">
+                                <p><i class="ti-calendar"></i>Started On: 12:00 PM.</p>
+                                <p><i class="ti-location-pin"></i>Grand Mahal, Dubai 2100.</p>
+                            </div>
+                            <p>Help today because tomorrow you may be the one who needs more helping!</p>
+                            <a href="#" class="default-btn">Read More</a>
+                        </div>
+                    </div>
+                    <div class="events-item">
+                        <div class="event-thumb">
+                           <img src="img/events-2.jpg" alt="events">
+                        </div>
+                        <div class="event-details">
+                            <h3>Insure clean water to everyone in Africa.</h3>
+                            <div class="event-info">
+                                <p><i class="ti-calendar"></i>Started On: 12:00 PM.</p>
+                                <p><i class="ti-location-pin"></i>Grand Mahal, Dubai 2100.</p>
+                            </div>
+                            <p>Help today because tomorrow you may be the one who needs more helping!</p>
+                            <a href="#" class="default-btn">Read More</a>
+                        </div>
+                    </div>
+                    <div class="events-item">
+                        <div class="event-thumb">
+                           <img src="img/events-3.jpg" alt="events">
+                        </div>
+                        <div class="event-details">
+                            <h3>Nepal Earthquake Clean Water Initiative.</h3>
+                            <div class="event-info">
+                                <p><i class="ti-calendar"></i>Started On: 12:00 PM.</p>
+                                <p><i class="ti-location-pin"></i>Grand Mahal, Dubai 2100.</p>
+                            </div>
+                            <p>Help today because tomorrow you may be the one who needs more helping!</p>
+                            <a href="#" class="default-btn">Read More</a>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </section>Events Section -->
+        
+      <section class="testimonial-section bd-bottom padding" id="team">
+            <div class="container">
+                <div class="section-heading text-center mb-40">
+                    <h2>Our Team</h2>
+                    <span class="heading-border"></span>
+                    <!-- <p>Help today because tomorrow you may be the one who <br> needs more helping!</p> -->
+                </div>
+                <div id="testimonial-carousel" class="testimonial-carousel owl-carousel owl-theme owl-loaded">
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(-2250px, 0px, 0px); transition: all 0.5s ease 0s; width: 5250px;"><div class="owl-item cloned" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-06.jpg" alt="profile">
+                            <h4>Mr. Jahangir Khan <span>Trustee</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;"><br><br></p>
+                    </div></div><div class="owl-item cloned" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-07.jpg" alt="profile">
+                            <h4>Mr. Mehraj Ud Din Sofi<span>Trustee</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;"><br><br></p>
+                    </div></div><div class="owl-item cloned" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-08.jpg" alt="profile">
+                            <h4>Mr Fayaz Ahmad Sheikh<span>Trustee</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;"><br><br></p>
+                    </div></div><div class="owl-item" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                            <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-01.jpg" alt="profile">
+                             <h4>Dr. Shabir Ahmad Najar <span>Specialization-Unorganized Sector</span></h4>
+                         </div>
+                        <p style="margin-top: 15px;">B.A, B.Ed., M.A, PhD.UGC- NET,SET, JRF<br><br></p>
+                    </div></div><div class="owl-item" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-02.jpg" alt="profile">
+                            <h4>Mr. Zahid Ahmad Lone <span>Specialization-Disability studies.</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;">MSW, PhD (Pursuing)UGC- NET<br><br></p>
+                    </div></div><div class="owl-item" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-02.jpg" alt="profile">
+                            <h4>Ms. Faryalla Farooq <span>Specialization- Working With Children, Youth</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;">B.A, MSW<br><br></p>
+                    </div></div><div class="owl-item active" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-02.jpg" alt="profile">
+                            <h4>Ms. Seerat Jan <span>Specialization- Working With Women, Elderly</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;">B.A, MSW<br><br></p>
+                    </div></div><div class="owl-item active" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-05.jpg" alt="profile">
+                            <h4>Mr. Anzar Ul Aijaz <span>Specialization-Drug De-Addiction</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;">MSW (Pursuing) Drug De-Addiction(6 months certificate course)- completed </p>
+                    </div></div><div class="owl-item active" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-06.jpg" alt="profile">
+                            <h4>Mr. Jahangir Khan <span>Trustee</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;"><br><br></p>
+                    </div></div><div class="owl-item" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-07.jpg" alt="profile">
+                            <h4>Mr. Mehraj Ud Din Sofi<span>Trustee</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;"><br><br></p>
+                    </div></div><div class="owl-item" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-08.jpg" alt="profile">
+                            <h4>Mr Fayaz Ahmad Sheikh<span>Trustee</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;"><br><br></p>
+                    </div></div><div class="owl-item cloned" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                            <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-01.jpg" alt="profile">
+                             <h4>Dr. Shabir Ahmad Najar <span>Specialization-Unorganized Sector</span></h4>
+                         </div>
+                        <p style="margin-top: 15px;">B.A, B.Ed., M.A, PhD.UGC- NET,SET, JRF<br><br></p>
+                    </div></div><div class="owl-item cloned" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-02.jpg" alt="profile">
+                            <h4>Mr. Zahid Ahmad Lone <span>Specialization-Disability studies.</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;">MSW, PhD (Pursuing)UGC- NET<br><br></p>
+                    </div></div><div class="owl-item cloned" style="width: 360px; margin-right: 15px;"><div class="testimonial-item">
+                        <div class="testi-footer">
+                           <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/team-02.jpg" alt="profile">
+                            <h4>Ms. Faryalla Farooq <span>Specialization- Working With Children, Youth</span></h4>
+                        </div>
+                        <p style="margin-top: 15px;">B.A, MSW<br><br></p>
+                    </div></div></div></div><div class="owl-controls"><div class="owl-nav"><div class="owl-prev" style="display: none;">prev</div><div class="owl-next" style="display: none;">next</div></div><div style="" class="owl-dots"><div class="owl-dot"><span></span></div><div class="owl-dot active"><span></span></div><div class="owl-dot"><span></span></div></div></div></div>
+            </div>
+        </section> 
+        
+        <section class="blog-section bg-grey bd-bottom padding" id="campaigns">
+            <div class="container">
+                <div class="section-heading text-center mb-40">
+                    <h2>Recent Campaingns</h2>
+                    <span class="heading-border"></span>
+                    <p>Help today because tomorrow you may be the one who <br> needs more helping!</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 xs-padding">
+                        <div class="blog-items grid-list row">
+                            <div class="col-md-4 padding-15">
+                                <div class="blog-post">
+                                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/home-blog-1.jpg" alt="blog post">
+                                    <div class="blog-content">
+                                        <span class="date"><i class="fa fa-clock-o"></i> January 01.2021</span>
+                                        <h3><a href="#">Campaign on Child Mental health</a></h3>
+                                        <p>3 years of Covid-19 pandemic 
+saw 52 per cent increase of screen time among children; Excessive use of
+ mobile phones can lead to brain damage of children, reveals study; 
+Parents must find alternate ways for kids to express their feelings. In 
+today’s digital world, it seems normal to see our children addicted to 
+their phones, searching for various forms of entertainment and 
+information online. While parents seem to be least bothered about the 
+growing trend, the child experts believe it is equally important for 
+children and adolescents to manage their screen time appropriately 
+before developing smartphone addiction which may affect the mental 
+health of children. The experts in valley underline a series of the 
+adverse effects of mobile addiction and screen-based technology on 
+children’s psychology in Kashmir. They said that the children and 
+adolescents are witnessing major psychological issues due to mobile 
+addiction, gaming and the widespread use of digital devices in their 
+daily lives.</p>
+<!--                                         <a href="#" class="post-meta">Read More</a>
+ -->                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 padding-15">
+                                <div class="blog-post">
+                                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/home-blog-2.jpg" alt="blog post">
+                                    <div class="blog-content">
+                                        <span class="date"><i class="fa fa-clock-o"></i> January 01.2021</span>
+                                        <h3><a href="#">Unemployment</a></h3>
+                                        <p>The three basic needs of 
+human beings are – food, home and clothing. All these needs can be 
+properly fulfilled only if a person has financial avenues which are only
+ possible if there are ways, employment and some paid occupation. 
+However, there are many people our country  who have failed to secure a 
+job. As a result, they have an insignificant source of income. A large 
+number of educated working-age men and women are out of jobs. 
+Unemployment anywhere in the world can be hard,especially in the last 
+three years, young minds are finding it difficult to cope with the 
+rising unemployment rates. Doctors across the hospitals of Kashmir are 
+reporting an exponential increase in new cases of depression. The 
+J&amp;K UT has certain inherent strengths that can be utilized to 
+improve the income of its people and to provide gainful employment 
+opportunities on sustainable basis, which are like strong base of 
+traditional skills not found elsewhere; untapped natural resource; a 
+natural environment which has been very profitably utilized by other 
+countries for high income-environment friendly tourism industry.</p>
+                                        <!-- <a href="#" class="post-meta">Read More</a> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 padding-15">
+                                <div class="blog-post">
+                                    <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/home-blog-3.jpg" alt="blog post">
+                                    <div class="blog-content">
+                                        <span class="date"><i class="fa fa-clock-o"></i> January 01.2021</span>
+                                        <h3><a href="#">Drug De-addiction</a></h3>
+                                        <p>The study on drug addiction 
+suggests that Kashmir has around 67,000 drug addicts, out of which 85 
+per cent, which totals more than 56000 use heroin daily that too by 
+injecting it into the body.  The other way to use heroin is through the 
+foil. Besides, the study revealed that most drug addicts are in the age 
+group of 17-33 and are unemployed. Surprisingly, doctors say that every 
+person who is addicted to heroin is spending Rs 88,000 every month for 
+drugs. However, no society can win a war against drugs until there is no
+ cooperation and coordination among different stakeholders. But society 
+has a key role to play. Regret is no rescue. The disaster demands 
+discipline, first at home and later outside. A parent should make an 
+effort to be part of his child’s life. Not monetarily only, but mentally
+ as well. Ensuring comfort should not be the only concern, the crisis 
+requires care. Care of being conscious about the well-being of a child. 
+More importantly, the pulpits must prefer to talk about the menace, not 
+only for condemnation but condoning the negatives of affected people to 
+spread positivity in their lives
+                                        </p>
+                                        <!-- <a href="#" class="post-meta">Read More</a> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> 
+        <!-- <div class="sponsor-section bd-bottom">
+            <div class="container">
+                <ul id="sponsor-carousel" class="sponsor-items owl-carousel">
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-1.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-2.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-3.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-4.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-5.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-6.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-7.png" alt="sponsor-image">
+                    </li>
+                    <li class="sponsor-item">
+                        <img src="img/sponsor-8.png" alt="sponsor-image">
+                    </li>
+                </ul>
+            </div>
+        </div> --><!-- ./Sponsor Section -->
+        
+        <section class="widget-section padding" id="donate">
+            <div class="container">
+                <div class="widget-wrap row">
+                    <div class="col-md-4 xs-padding">
+                        <div class="widget-content">
+                            <img src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/logo-3.png" alt="logo">
+                            <p>The secret to happiness lies in helping others. Never underestimate the difference YOU can make in the lives of the poor</p>
+                            <ul class="social-icon">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4 xs-padding">
+                        <div class="widget-content">
+                            <h3>Registration and Bank Info</h3>
+                            <ul class="widget-link">
+                                <li><a>Reg No.026896</a></li>
+                               <li><a>Account number: 00070101000003823</a></li>
+                                <li><a>IFSC Code: JAKA0NASEEM</a></li>
+                                <li><a>Branch: U.C. Hazratbal, Srinagar</a></li> 
+                               <li><a>Pan Number: AADTC230</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4 xs-padding">
+                        <div class="widget-content">
+                            <h3>CHWRRF Location</h3>
+                            <ul class="address">
+                                <li><i class="ti-email"></i> Info@YourDomain.com</li>
+                                <li><i class="ti-mobile"></i> +(333) 052 39876</li>
+                                <li><i class="ti-location-pin"></i> Habak Naseem Bagh, Hazratbal, Srinagar Jammu and Kashmir, India Pin Code:190006</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- ./Widget Section -->
+        
+        <footer class="footer-section">
+			<div class="container">
+                <div class="row">
+                    <div class="col-md-6 sm-padding">
+                        <div class="copyright">© CHWRRF</div>
+                    </div>
+                    <!-- <div class="col-md-6 sm-padding">
+                        <ul class="footer-social">
+                            <li><a href="#">Orders</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Report Problem</a></li>
+                        </ul>
+                    </div> -->
+                </div>
+			</div>
+		</footer><!-- /Footer Section -->
+        
+		<a data-scroll="" href="#header" id="scroll-to-top" style="display: block;"><i class="arrow_up"></i></a>
+	
+		<!-- jQuery Lib -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery-1.12.4.min.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/bootstrap.min.js"></script>
+		<!-- Tether JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/tether.min.js"></script>
+        <!-- Imagesloaded JS -->
+        <script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/imagesloaded.pkgd.min.js"></script>
+		<!-- OWL-Carousel JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/owl.carousel.min.js"></script>
+		<!-- isotope JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery.isotope.v3.0.2.js"></script>
+		<!-- Smooth Scroll JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/smooth-scroll.min.js"></script>
+		<!-- venobox JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/venobox.min.js"></script>
+        <!-- ajaxchimp JS -->
+        <script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery.ajaxchimp.min.js"></script>
+        <!-- Counterup JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery.counterup.min.js"></script>
+        <!-- waypoints js -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery.waypoints.v2.0.3.min.js"></script>
+        <!-- Slick Nav JS -->
+        <script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery.slicknav.min.js"></script>
+        <!-- Nivo Slider JS -->
+        <script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/jquery.nivo.slider.pack.js"></script>
+        <!-- Letter Animation JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/letteranimation.min.js"></script>
+        <!-- Wow JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/wow.min.js"></script>
+		<!-- Contact JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/contact.js"></script>
+		<!-- Main JS -->
+		<script src="CHWRRF%20Centre%20for%20Human%20Well-Being%20Research%20and%20Rehabilitation%20Foundation_files/main.js"></script>
+
+    
+</body></html>

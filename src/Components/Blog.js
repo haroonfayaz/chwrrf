@@ -49,7 +49,7 @@ const Blog = () => {
                             <h4>Recent Posts</h4>
                             <ul className="recent-posts">
                                 <li>
-                                    <img src="images/rel-post-1.jpg" alt="blog post"/>
+                                    <img src={process.env.PUBLIC_URL + "/images/rel-post-1.jpg"} alt="blog post"/>
                                     <div>
                                         <h4><Link href="#">Standard post</Link></h4>
                                         <span className="date"><i className="fa fa-clock-o"></i> January 01.2018</span>   
@@ -63,7 +63,7 @@ const Blog = () => {
                                     </div>                 
                                 </li>
                                 <li>
-                                    <img src="images/rel-post-3.jpg" alt="blog post"/>
+                                    <img src={process.env.PUBLIC_URL + "/images/rel-post-3.jpg"} alt="blog post"/>
                                     <div>
                                         <h4><Link href="#">Quote post</Link></h4>
                                         <span className="date"><i className="fa fa-clock-o"></i> January 01.2018</span>   
@@ -77,7 +77,7 @@ const Blog = () => {
                                     </div>                 
                                 </li>
                                 <li>
-                                    <img src="images/rel-post-5.jpg" alt="blog post"/>
+                                    <img src={process.env.PUBLIC_URL + "/images/rel-post-5.jpg"} alt="blog post"/>
                                     <div>
                                         <h4><Link href="#">gallery post</Link></h4>
                                         <span className="date"><i className="fa fa-clock-o"></i> January 01.2018</span>   

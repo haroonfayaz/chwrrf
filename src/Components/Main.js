@@ -11,8 +11,11 @@ const Main = () => {
           <Box sx={{ border: "none", pt: 2, borderRadius: 3 }}>
             <div id="carouselExampleCaptions" className="carousel">
               <div className="carousel-inner">
-                {Main_carousel.map((carousel) => (
-                  <div className="carousel-item active" key={carousel.id}>
+                {Main_carousel.map((carousel, index) => (
+                  <div
+                    className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    key={carousel.id}
+                  >
                     <img
                       src={carousel.img}
                       className="d-block w-100"
@@ -22,9 +25,9 @@ const Main = () => {
                       <h5 className="animate__animated animate__fadeInLeft">
                         {carousel.tagline}
                       </h5>
-                      <h1 className="animate__animated animate__fadeInRight">
+                      <h3 className="animate__animated animate__fadeInRight">
                         {carousel.title}
-                      </h1>
+                      </h3>
                       <p className="animate__animated animate__fadeInBottom">
                         {carousel.desc}
                       </p>
@@ -154,11 +157,7 @@ const Main = () => {
           }}
         >
           {promo_Options.map((promo) => (
-            <Grid
-              item
-              xs={12}
-              md={4}
-            >
+            <Grid item xs={12} md={4}>
               <div className="promo-content" key={promo.id}>
                 <img src={promo.img} alt="prmo icon" />
                 <h3>{promo.title}</h3>

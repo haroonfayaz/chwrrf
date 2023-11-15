@@ -15,7 +15,7 @@ export const Main_carousel = [
   {
     id: 2,
     img: process.env.PUBLIC_URL + "/images/slider-3.jpg",
-    title: "Give a little. Change a lot.",
+    title: "Give a little.Change a lot.",
     desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
   },
 ];
@@ -102,4 +102,154 @@ export const promo_Options = [
     title: "Become A Volunteer",
     desc: "Volunteering with our charity is an incredibly rewarding experience. You can witness first-hand the difference that can be made by volunteering.",
   },
+];
+
+export const menuItems = [
+  {
+    route: "About",
+    target: "about",
+  },
+  {
+    route: "Missions",
+    target: "mission",
+  },
+  {
+    route: "Team",
+    target: "team",
+  },
+  {
+    route: "Campaigns",
+    target: "campaigns",
+  },
+  {
+    route: "Volunteers",
+    target: "volunteers",
+  },
+];
+
+export const future_campaigns = [
+  {
+    id: 0,
+    img: process.env.PUBLIC_URL + "/images/post-1.jpg",
+    title: "Card Title 1",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 1,
+    img: process.env.PUBLIC_URL + "/images/post-2.jpg",
+    title: "Card Title 2",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 2,
+    img: process.env.PUBLIC_URL + "/images/post-3.jpg",
+    title: "Card Title 3",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 3,
+    img: process.env.PUBLIC_URL + "/images/post-4.jpg",
+    title: "Card Title 4",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 4,
+    img: process.env.PUBLIC_URL + "/images/post-5.jpg",
+    title: "Card Title 5",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 5,
+    img: process.env.PUBLIC_URL + "/images/post-6.jpg",
+    title: "Card Title 6",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 6,
+    img: process.env.PUBLIC_URL + "/images/post-1.jpg",
+    title: "Card Title 7",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 7,
+    img: process.env.PUBLIC_URL + "/images/post-2.jpg",
+    title: "Card Title 8",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 8,
+    img: process.env.PUBLIC_URL + "/images/post-3.jpg",
+    title: "Card Title 9",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 9,
+    img: process.env.PUBLIC_URL + "/images/post-4.jpg",
+    title: "Card Title 10",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 10,
+    img: process.env.PUBLIC_URL + "/images/post-5.jpg",
+    title: "Card Title 11",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 11,
+    img: process.env.PUBLIC_URL + "/images/post-6.jpg",
+    title: "Card Title 12",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 12,
+    img: process.env.PUBLIC_URL + "/images/post-2.jpg",
+    title: "Card Title 13",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+  {
+    id: 13,
+    img: process.env.PUBLIC_URL + "/images/post-3.jpg",
+    title: "Card Title 14",
+    desc: " Help today because tomorrow you may be the one who needs helping! Forget what you can get and see what you can give.",
+  },
+];
+
+export const volunteers=[
+    {
+        id: 0,
+        img: process.env.PUBLIC_URL + "/images/team-2.jpg",
+        name: "Dr.Aadil Bashir Wani",
+        qual :"Sr.Assistant Professor Social work University of Kashmir Child Rights Expert"
+      },
+      {
+        id: 1,
+        img: process.env.PUBLIC_URL + "/images/team-3.png",
+        name: "Dr.Faroze Ahmad Khan",
+        qual :"Gastroenterologist Health Deptt. J&K Health Expert"
+      },
+      {
+        id: 2,
+        img: process.env.PUBLIC_URL + "/images/team-1.jpg",
+        name: "Alfred Gnanaolivu",
+        qual :"Consultant at Freelance Consultancy & Training Eco Foundation for Social Alternative EFSA) Bengaluru,Karnataka, India",
+      },
+      {
+        id: 3,
+        img: process.env.PUBLIC_URL + "/images/team-5.jpg",
+        name: "Ms.Affarmand Rashid",
+        qual :"Assistant Director incharge of SOS children’s village of Srinagar. Experienced Developmental Practitioner on Child Rights, Women Empowerment and Youth Development.",
+      },
+      {
+        id: 4,
+        img: process.env.PUBLIC_URL + "/images/team-6.jpg",
+        name: "Mr.Nasir Rahim",
+        qual :"Senior Child Rights Practitioner and Youth Development Expert. SOS Children’s Village of India.",
+      },
+      {
+        id: 5,
+        img: process.env.PUBLIC_URL + "/images/team-7.jpg",
+        name: "Dr.Basharat Ahmad Bhat",
+        qual :"PhD Life Sciences University of Kashmir",
+      },
+   
 ];

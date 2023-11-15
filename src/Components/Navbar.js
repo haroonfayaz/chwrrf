@@ -12,29 +12,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar } from "@mui/material";
 import { Link as ScrollLink } from "react-scroll";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { menuItems } from "../data/Constants";
 
-const menuItems = [
-  {
-    route: "About",
-    target: "about",
-  },
-  {
-    route: "Missions",
-    target: "mission",
-  },
-  {
-    route: "Team",
-    target: "team",
-  },
-  {
-    route: "Campaigns",
-    target: "campaigns",
-  },
-  {
-    route: "Volunteers",
-    target: "volunteers",
-  },
-];
+
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();

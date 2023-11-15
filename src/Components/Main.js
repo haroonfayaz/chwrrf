@@ -1,92 +1,42 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import React from "react";
 import "../main.css";
+import { Main_carousel, news_data, promo_Options } from "../data/Constants";
 
 const Main = () => {
   return (
     <Box>
       <Grid container spacing={0}>
         <Grid item xs={12} md={8}>
-          <Box sx={{ border: "none", pt: 2,borderRadius:3 }}>
-            <div
-              id="carouselExampleCaptions"
-              className="carousel"
-            >
+          <Box sx={{ border: "none", pt: 2, borderRadius: 3 }}>
+            <div id="carouselExampleCaptions" className="carousel">
               <div className="carousel-inner">
-                <div className="carousel-item active">
-                  <img
-                    src="images/slider-1.jpg"
-                    className="d-block w-100"
-                    alt="..."
-                  />
-                  <div className="carousel-caption d-none d-md-block">
-                    <h5 className="animate__animated animate__fadeInLeft">
-                      Join Us Today
-                    </h5>
-                    <h1 className="animate__animated animate__fadeInRight">
-                      Better Life for People
-                    </h1>
-                    <p className="animate__animated animate__fadeInBottom">
-                      Help today because tomorrow you may be the one who needs
-                      helping! <br />
-                      Forget what you can get and see what you can give.
-                    </p>
-                    <a
-                      href="#donate"
-                      className="button animate__animated animate__fadeInLeft"
-                    >
-                      Donate
-                    </a>
+                {Main_carousel.map((carousel) => (
+                  <div className="carousel-item active" key={carousel.id}>
+                    <img
+                      src={carousel.img}
+                      className="d-block w-100"
+                      alt={carousel.title}
+                    />
+                    <div className="carousel-caption d-none d-md-block">
+                      <h5 className="animate__animated animate__fadeInLeft">
+                        {carousel.tagline}
+                      </h5>
+                      <h1 className="animate__animated animate__fadeInRight">
+                        {carousel.title}
+                      </h1>
+                      <p className="animate__animated animate__fadeInBottom">
+                        {carousel.desc}
+                      </p>
+                      <a
+                        href="#donate"
+                        className="button animate__animated animate__fadeInLeft"
+                      >
+                        Donate
+                      </a>
+                    </div>
                   </div>
-                </div>
-                <div className="carousel-item">
-                  <img
-                    src="images/slider-2.jpg"
-                    className="d-block w-100"
-                    alt="..."
-                  />
-                  <div className="carousel-caption d-none d-md-block">
-                    <h1 className="animate__animated animate__fadeInRight">
-                      Together we <br />
-                      can make a Difference
-                    </h1>
-                    <p className="animate__animated animate__fadeInBottom">
-                      Help today because tomorrow you may be the one who needs
-                      helping! <br />
-                      Forget what you can get and see what you can give.
-                    </p>
-                    <a
-                      href="#donate"
-                      className="button animate__animated animate__fadeInLeft"
-                    >
-                      Donate
-                    </a>
-                  </div>
-                </div>
-                <div className="carousel-item">
-                  <img
-                    src="images/slider-3.jpg"
-                    className="d-block w-100"
-                    alt="..."
-                  />
-                  <div className="carousel-caption d-none d-md-block">
-                    <h1 className="animate__animated animate__fadeInRight">
-                      Give a little. Change a lot.
-                    </h1>
-                    <p className="animate__animated animate__fadeInBottom">
-                      Help today because tomorrow you may be the one who needs
-                      helping! Forget what you can get and see what you can
-                      give.
-                    </p>
-                    <a
-                      href="#donate"
-                      className="button animate__animated animate__fadeInLeft"
-                    >
-                      Donate
-                    </a>
-                  </div>
-                </div>
-                
+                ))}
               </div>
               <button
                 className="carousel-control-prev"
@@ -113,15 +63,14 @@ const Main = () => {
             </div>
           </Box>
         </Grid>
-        <Grid item xs={12} md={4} >
+        <Grid item xs={12} md={4}>
           <Box
             sx={{
               p: 2,
               backgroundColor: "#f8b864",
               borderRadius: 3,
               height: "600px",
-              m:{xs:4}
-              
+              m: { xs: 4 },
             }}
           >
             <Typography
@@ -139,318 +88,56 @@ const Main = () => {
             </Typography>
             <div className="scrolling-container">
               <div className="scrolling-content">
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    fontSize: { xs: "18px" },
+                {news_data.map((data) => (
+                  <div>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        pt: 2,
+                        fontSize: { xs: "18px" },
 
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title 22
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    pt: 2,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link Title
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    pt: 2,
-                    pl: 1,
-                    display: { xs: "block", md: "flex" },
-                    fontWeight: 500,
-                    color: "white",
-                    "&::after": {
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  News Link
-                </Typography>
+                        display: { xs: "block", md: "flex" },
+                        fontWeight: 500,
+                        color: "white",
+                        "&::after": {
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        },
+                      }}
+                    >
+                      {data.news_title}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        pl: 1,
+                        display: { xs: "block", md: "flex" },
+                        fontWeight: 500,
+                        color: "white",
+                        "&::after": {
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        },
+                      }}
+                    >
+                      {data.link_title}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        display: { xs: "block", md: "flex" },
+                        fontWeight: 300,
+                        fontSize: 13,
+                        color: "white",
+                        "&::after": {
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        },
+                      }}
+                    >
+                      {data.date}
+                    </Typography>
+                  </div>
+                ))}
               </div>
             </div>
           </Box>
@@ -466,39 +153,19 @@ const Main = () => {
             top: "-80px",
           }}
         >
-          <Grid item xs={12} md={4}>
-            <div className="promo-content">
-              <img src="images/icon-1.png" alt="prmo icon" />
-              <h3>Make Donation</h3>
-              <p>
-                Your donation will make a difference to so many people in the
-                community and help create a brighter, more prosperous future for
-                everyone.
-              </p>
-            </div>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <div className="promo-content">
-              <img src="images/icon-2.png" alt="prmo icon" />
-              <h3>Fundraising</h3>
-              <p>
-                It takes a lot of dedication, hard work and initiative to make
-                your fundraising campaign a success. That's why we need your
-                help in fundraising for our charity.
-              </p>
-            </div>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <div className="promo-content">
-              <img src="images/icon-3.png" alt="prmo icon" />
-              <h3>Become A Volunteer</h3>
-              <p>
-                Volunteering with our charity is an incredibly rewarding
-                experience. You can witness first-hand the difference that can
-                be made by volunteering.
-              </p>
-            </div>
-          </Grid>
+          {promo_Options.map((promo) => (
+            <Grid
+              item
+              xs={12}
+              md={4}
+            >
+              <div className="promo-content" key={promo.id}>
+                <img src={promo.img} alt="prmo icon" />
+                <h3>{promo.title}</h3>
+                <p>{promo.desc}</p>
+              </div>
+            </Grid>
+          ))}
         </Container>
       </Grid>
     </Box>

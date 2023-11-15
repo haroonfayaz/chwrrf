@@ -23,7 +23,7 @@ const CampaignsComponent = () => {
   return (
     <div>
       <div className="container-fluid">
-        <div className="line tem" id="Programs">
+        <div className="line tem" id="programs">
           <div className="section-heading text-center mb-40">
             <h2>Recent Campaigns</h2>
             <span className="heading-border"></span>

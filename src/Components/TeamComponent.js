@@ -2,7 +2,7 @@ import React from "react";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
-
+import { team_members } from "../data/Constants";
 
 const TeamComponent = () => {
   const responsiveSettings = {
@@ -38,77 +38,24 @@ const TeamComponent = () => {
 
 
         >
-          <div className="testimonial-item">
-            <div className="testi-footer">
-              <img src={process.env.PUBLIC_URL +"/images/team-01.jpg"} alt="profile" />
+        {
+          team_members.map((member,index)=>(
+            <div className="testimonial-item">
+            <div className="testi-footer" key={index}>
+              <img src={member.img} alt="profile" />
               <h4>
-                Dr. Shabir Ahmad Najar <span>Vice-Chairman</span>
-                <span>Specialization-Unorganized Sector</span>
+                {member.name}<span>{member.designation}</span>
+                <span>{member.title}</span>
               </h4>
             </div>
             <p style={{ marginTop: "15px" }}>
-              B.A, B.Ed., M.A, PhD.UGC- NET,SET, JRF
+              {member.qual}
               <br />
               <br />
             </p>
           </div>
-          <div className="testimonial-item">
-            <div className="testi-footer">
-            <img src={process.env.PUBLIC_URL +"/images/team-02.jpg"} alt="profile" />
-              <h4>
-                Mr. Zahid Ahmad Lone <span>Coordinator</span>
-                <span>Specialization-Disability studies.</span>
-              </h4>
-            </div>
-            <p style={{ marginTop: "15px" }}>
-              MSW, PhD (Pursuing)UGC- NET
-              <br />
-              <br />
-            </p>
-          </div>
-          <div className="testimonial-item">
-            <div className="testi-footer">
-            <img src={process.env.PUBLIC_URL +"/images/team-03.jpg"} alt="profile" />
-              <h4>
-                Ms. Faryalla Farooq <span>Spokesperson</span>
-                <span>Specialization- Working With Children, Youth</span>
-              </h4>
-            </div>
-            <p style={{ marginTop: "15px" }}>
-              B.A, MSW
-              <br />
-              <br />
-            </p>
-          </div>
-          <div className="testimonial-item">
-            <div className="testi-footer">
-            <img src={process.env.PUBLIC_URL +"/images/team-03.jpg"} alt="profile" />
-              <h4>
-                Ms. Seerat Jan <span>Organizer</span>
-                <span>Specialization- Working With Women, Elderly</span>
-              </h4>
-            </div>
-            <p style={{ marginTop: "15px" }}>
-              B.A, MSW
-              <br />
-              <br />
-            </p>
-          </div>
-          <div className="testimonial-item">
-            <div className="testi-footer">
-            <img src={process.env.PUBLIC_URL +"/images/team-05.jpg"} alt="profile" />
-              <h4>
-                Mr. Anzar Ul Aijaz <span>Member</span>
-                <span>
-                  Specialization-Counselling Skills in Drug De-Addiction
-                </span>
-              </h4>
-            </div>
-            <p style={{ marginTop: "15px" }}>
-              MSW (Pursuing) Drug De-Addiction(6 months certificate course)-
-              completed{" "}
-            </p>
-          </div>
+          ))}
+     
         </OwlCarousel>
       </div>
     </div>

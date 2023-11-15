@@ -46,7 +46,7 @@ const ProgramsComponent = () => {
           responsive={responsiveSettings}
         >
           <div className="card" onClick={() => handleButtonblog()}>
-            <img src="images/post-1.jpg" className="card-img-top" alt="..." />
+            <img src={process.env.PUBLIC_URL +"/images/post-1.jpg"} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Card title 1</h5>
               <p className="card-text">
@@ -59,7 +59,7 @@ const ProgramsComponent = () => {
             </div>
           </div>
           <div className="card d-none d-md-block">
-            <img src="images/post-2.jpg" className="card-img-top" alt="..." />
+          <img src={process.env.PUBLIC_URL +"/images/post-2.jpg"} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Card title 2</h5>
               <p className="card-text">
@@ -72,7 +72,7 @@ const ProgramsComponent = () => {
             </div>
           </div>
           <div className="card d-none d-md-block">
-            <img src="images/post-3.jpg" className="card-img-top" alt="..." />
+          <img src={process.env.PUBLIC_URL +"/images/post-3.jpg"} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Card title 3</h5>
               <p className="card-text">
@@ -85,7 +85,7 @@ const ProgramsComponent = () => {
             </div>
           </div>
           <div className="card">
-            <img src="images/post-4.jpg" className="card-img-top" alt="..." />
+          <img src={process.env.PUBLIC_URL +"/images/post-4.jpg"} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Card title 4</h5>
               <p className="card-text">
@@ -98,7 +98,7 @@ const ProgramsComponent = () => {
             </div>
           </div>
           <div className="card d-none d-md-block">
-            <img src="images/post-5.jpg" className="card-img-top" alt="..." />
+          <img src={process.env.PUBLIC_URL +"/images/post-5.jpg"} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Card title 5</h5>
               <p className="card-text">
@@ -111,7 +111,7 @@ const ProgramsComponent = () => {
             </div>
           </div>
           <div className="card d-none d-md-block">
-            <img src="images/post-6.jpg" className="card-img-top" alt="..." />
+          <img src={process.env.PUBLIC_URL +"/images/post-6.jpg"} className="card-img-top" alt="..." />
             <div className="card-body">
               <h5 className="card-title">Card title 6</h5>
               <p className="card-text">

@@ -22,16 +22,16 @@ const Footer = () => {
         backgroundPosition: "right 90px center",
         backgroundRepeat: "no-repeat",
         height: "100%",
-        mb:3,
-        pb:3
+        mb: 3,
+        pb: 3,
       }}
     >
       <Grid container spacing={1}>
-      <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4}>
           <Box sx={{ border: "none", p: 2 }}>
             <Avatar
               alt="CHWRRF Logo"
-              src="images/logo-2.png"
+              src={process.env.PUBLIC_URL + "/images/logo-2.png"}
               sx={{
                 width: 70,
                 height: 70,
@@ -72,7 +72,6 @@ const Footer = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>
-
           <Box sx={{ border: "none", p: 2 }}>
             <Typography
               variant="h5"
@@ -81,8 +80,7 @@ const Footer = () => {
                 display: { xs: "block", md: "flex" },
                 fontWeight: 500,
                 color: "#ddd",
-                textDecoration:"underline",
-
+                textDecoration: "underline",
               }}
             >
               Registration and Bank Info
@@ -197,7 +195,6 @@ const Footer = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>
-
           <Box sx={{ border: "none", p: 2 }}>
             <Typography
               variant="h5"
@@ -206,7 +203,7 @@ const Footer = () => {
                 display: { xs: "block", md: "flex" },
                 fontWeight: 500,
                 color: "#ddd",
-                textDecoration:"underline",
+                textDecoration: "underline",
               }}
             >
               CHWRRF Location
@@ -216,26 +213,29 @@ const Footer = () => {
               sx={{
                 pt: 2,
                 display: { xs: "block", md: "flex" },
-                alignItems: 'center', 
+                alignItems: "center",
 
                 fontWeight: 500,
                 color: "#999",
               }}
             >
-              <MailOutlineIcon fontSize="large" sx={{pr:2,fontSize:"50px"}}/> chwrrf@rediffmail.com
+              <MailOutlineIcon
+                fontSize="large"
+                sx={{ pr: 2, fontSize: "50px" }}
+              />{" "}
+              chwrrf@rediffmail.com
             </Typography>
             <Typography
               variant="body1"
               sx={{
                 pt: 2,
                 display: { xs: "block", md: "flex" },
-                alignItems: 'center', 
+                alignItems: "center",
                 fontWeight: 500,
                 color: "#999",
-
               }}
             >
-              <MobileScreenShareOutlined sx={{pr:2,fontSize:"50px",}}/>
+              <MobileScreenShareOutlined sx={{ pr: 2, fontSize: "50px" }} />
               +(91) 70069 60120
             </Typography>
             <Typography
@@ -243,13 +243,16 @@ const Footer = () => {
               sx={{
                 pt: 2,
                 display: { xs: "block", md: "flex" },
-                alignItems: 'center', 
+                alignItems: "center",
 
                 fontWeight: 500,
                 color: "#999",
               }}
             >
-              <LocationOnOutlinedIcon fontSize="large"  sx={{pr:2,fontSize:"50px"}}/>
+              <LocationOnOutlinedIcon
+                fontSize="large"
+                sx={{ pr: 2, fontSize: "50px" }}
+              />
               Habak Naseem Bagh, Hazratbal, Srinagar Jammu and Kashmir, India
               Pin Code:190006
             </Typography>

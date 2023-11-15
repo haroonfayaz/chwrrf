@@ -129,7 +129,7 @@ const Navbar = () => {
             </Box>
             <Avatar
               alt="CHWRRF Logo"
-              src="images/logo-2.png"
+              src={process.env.PUBLIC_URL + "/images/logo-2.png"}
               sx={{
                 width: 50,
                 height: 50,

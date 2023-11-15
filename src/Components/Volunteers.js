@@ -26,6 +26,7 @@ const Volunteers = () => {
             <div className="team-wrapper row">
               <div className="col-lg-8 sm-padding">
                 <div className="team-wrap row">
+                 
                   <div
                     className="col-md-4"
                     style={{
@@ -34,27 +35,9 @@ const Volunteers = () => {
                   >
                     {" "}
                     <div className="team-details">
-                      <img src="images/team-1.jpg" alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Joseph Mathew{" "}
-                          <span>
-                            Zonal Coordinator- Family Strengthening Program SOS
-                            Children's Villages of India{" "}
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                    <div className="team-details">
-                      <img src="images/team-2.jpg" alt="team" />
+                      <img 
+                      src={process.env.PUBLIC_URL +"/images/team-2.jpg"} 
+                      alt="team" />
                       <div className="hover">
                         <h3>
                           Dr. Aadil Bashir Wani
@@ -72,9 +55,10 @@ const Volunteers = () => {
                       padding: "5px",
                     }}
                   >
-                    {" "}
                     <div className="team-details">
-                      <img src="images/team-3.png" alt="team" />
+                      <img
+                      src={process.env.PUBLIC_URL +"/images/team-3.png"} 
+                        alt="team" />
                       <div className="hover">
                         <h3>
                           Dr. Faroze Ahmad Khan
@@ -93,7 +77,9 @@ const Volunteers = () => {
                   >
                     {" "}
                     <div className="team-details">
-                      <img src="images/team-4.jpg" alt="team" />
+                      <img 
+                      src={process.env.PUBLIC_URL +"/images/team-4.jpg"} 
+                      alt="team" />
                       <div className="hover">
                         <h3>
                           Alfred Gnanaolivu{" "}
@@ -114,7 +100,9 @@ const Volunteers = () => {
                   >
                     {" "}
                     <div className="team-details">
-                      <img src="images/team-5.jpg" alt="team" />
+                      <img 
+                      src={process.env.PUBLIC_URL +"/images/team-5.jpg"} 
+                      alt="team" />
                       <div className="hover">
                         <h3>
                           Ms. Affarmand Rashid
@@ -136,7 +124,9 @@ const Volunteers = () => {
                   >
                     {" "}
                     <div className="team-details">
-                      <img src="images/team-6.jpg" alt="team" />
+                      <img 
+                      src={process.env.PUBLIC_URL +"/images/team-6.jpg"} 
+                      alt="team" />
                       <div className="hover">
                         <h3>
                           Mr. Nasir Rahim{" "}
@@ -148,14 +138,7 @@ const Volunteers = () => {
                       </div>
                     </div>
                   </div>
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                  </div>
+                 
                   <div
                     className="col-md-4"
                     style={{
@@ -164,7 +147,9 @@ const Volunteers = () => {
                   >
                     {" "}
                     <div className="team-details">
-                      <img src="images/team-7.jpg" alt="team" />
+                      <img 
+                      src={process.env.PUBLIC_URL +"/images/team-7.jpg"} 
+                      alt="team" />
                       <div className="hover">
                         <h3>
                           Dr. Basharat Ahmad Bhat{" "}

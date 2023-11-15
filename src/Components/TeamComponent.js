@@ -40,7 +40,7 @@ const TeamComponent = () => {
         >
           <div className="testimonial-item">
             <div className="testi-footer">
-              <img src="images/team-01.jpg" alt="profile" />
+              <img src={process.env.PUBLIC_URL +"/images/team-01.jpg"} alt="profile" />
               <h4>
                 Dr. Shabir Ahmad Najar <span>Vice-Chairman</span>
                 <span>Specialization-Unorganized Sector</span>
@@ -54,7 +54,7 @@ const TeamComponent = () => {
           </div>
           <div className="testimonial-item">
             <div className="testi-footer">
-              <img src="images/team-02.jpg" alt="profile" />
+            <img src={process.env.PUBLIC_URL +"/images/team-02.jpg"} alt="profile" />
               <h4>
                 Mr. Zahid Ahmad Lone <span>Coordinator</span>
                 <span>Specialization-Disability studies.</span>
@@ -68,7 +68,7 @@ const TeamComponent = () => {
           </div>
           <div className="testimonial-item">
             <div className="testi-footer">
-              <img src="images/team-03.jpg" alt="profile" />
+            <img src={process.env.PUBLIC_URL +"/images/team-03.jpg"} alt="profile" />
               <h4>
                 Ms. Faryalla Farooq <span>Spokesperson</span>
                 <span>Specialization- Working With Children, Youth</span>
@@ -82,7 +82,7 @@ const TeamComponent = () => {
           </div>
           <div className="testimonial-item">
             <div className="testi-footer">
-              <img src="images/team-03.jpg" alt="profile" />
+            <img src={process.env.PUBLIC_URL +"/images/team-03.jpg"} alt="profile" />
               <h4>
                 Ms. Seerat Jan <span>Organizer</span>
                 <span>Specialization- Working With Women, Elderly</span>
@@ -96,7 +96,7 @@ const TeamComponent = () => {
           </div>
           <div className="testimonial-item">
             <div className="testi-footer">
-              <img src="images/team-05.jpg" alt="profile" />
+            <img src={process.env.PUBLIC_URL +"/images/team-05.jpg"} alt="profile" />
               <h4>
                 Mr. Anzar Ul Aijaz <span>Member</span>
                 <span>

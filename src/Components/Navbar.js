@@ -59,7 +59,7 @@ const Navbar = () => {
           <Toolbar disableGutters>
             <Avatar
               alt="CHWRRF Logo"
-              src="images/logo-2.png"
+              src={process.env.PUBLIC_URL + '/images/logo-2.png'}
               sx={{
                 width: 50,
                 height: 50,
@@ -76,7 +76,6 @@ const Navbar = () => {
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
                 fontWeight: 700,
                 letterSpacing: ".3rem",
                 color: "black",

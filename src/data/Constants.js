@@ -119,7 +119,7 @@ export const menuItems = [
   },
   {
     route: "Campaigns",
-    target: "campaigns",
+    target: "programs",
   },
   {
     route: "Volunteers",

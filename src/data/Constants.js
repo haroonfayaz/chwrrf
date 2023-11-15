@@ -214,42 +214,84 @@ export const future_campaigns = [
   },
 ];
 
-export const volunteers=[
-    {
-        id: 0,
-        img: process.env.PUBLIC_URL + "/images/team-2.jpg",
-        name: "Dr.Aadil Bashir Wani",
-        qual :"Sr.Assistant Professor Social work University of Kashmir Child Rights Expert"
-      },
-      {
-        id: 1,
-        img: process.env.PUBLIC_URL + "/images/team-3.png",
-        name: "Dr.Faroze Ahmad Khan",
-        qual :"Gastroenterologist Health Deptt. J&K Health Expert"
-      },
-      {
-        id: 2,
-        img: process.env.PUBLIC_URL + "/images/team-1.jpg",
-        name: "Alfred Gnanaolivu",
-        qual :"Consultant at Freelance Consultancy & Training Eco Foundation for Social Alternative EFSA) Bengaluru,Karnataka, India",
-      },
-      {
-        id: 3,
-        img: process.env.PUBLIC_URL + "/images/team-5.jpg",
-        name: "Ms.Affarmand Rashid",
-        qual :"Assistant Director incharge of SOS children’s village of Srinagar. Experienced Developmental Practitioner on Child Rights, Women Empowerment and Youth Development.",
-      },
-      {
-        id: 4,
-        img: process.env.PUBLIC_URL + "/images/team-6.jpg",
-        name: "Mr.Nasir Rahim",
-        qual :"Senior Child Rights Practitioner and Youth Development Expert. SOS Children’s Village of India.",
-      },
-      {
-        id: 5,
-        img: process.env.PUBLIC_URL + "/images/team-7.jpg",
-        name: "Dr.Basharat Ahmad Bhat",
-        qual :"PhD Life Sciences University of Kashmir",
-      },
-   
+export const volunteers = [
+  {
+    id: 0,
+    img: process.env.PUBLIC_URL + "/images/team-2.jpg",
+    name: "Dr.Aadil Bashir Wani",
+    qual: "Sr.Assistant Professor Social work University of Kashmir Child Rights Expert",
+  },
+  {
+    id: 1,
+    img: process.env.PUBLIC_URL + "/images/team-3.png",
+    name: "Dr.Faroze Ahmad Khan",
+    qual: "Gastroenterologist Health Deptt. J&K Health Expert",
+  },
+  {
+    id: 2,
+    img: process.env.PUBLIC_URL + "/images/team-1.jpg",
+    name: "Alfred Gnanaolivu",
+    qual: "Consultant at Freelance Consultancy & Training Eco Foundation for Social Alternative EFSA) Bengaluru,Karnataka, India",
+  },
+  {
+    id: 3,
+    img: process.env.PUBLIC_URL + "/images/team-5.jpg",
+    name: "Ms.Affarmand Rashid",
+    qual: "Assistant Director incharge of SOS children’s village of Srinagar. Experienced Developmental Practitioner on Child Rights, Women Empowerment and Youth Development.",
+  },
+  {
+    id: 4,
+    img: process.env.PUBLIC_URL + "/images/team-6.jpg",
+    name: "Mr.Nasir Rahim",
+    qual: "Senior Child Rights Practitioner and Youth Development Expert. SOS Children’s Village of India.",
+  },
+  {
+    id: 5,
+    img: process.env.PUBLIC_URL + "/images/team-7.jpg",
+    name: "Dr.Basharat Ahmad Bhat",
+    qual: "PhD Life Sciences University of Kashmir",
+  },
+];
+
+export const team_members = [
+  {
+    id: 0,
+    img: process.env.PUBLIC_URL + "/images/team-01.jpg",
+    name: "Dr.Shabir Ahmad Najar ",
+    designation: "Vice-Chairman",
+    title: "Specialization-Unorganized Sector",
+    qual: "B.A, B.Ed., M.A, PhD.UGC- NET,SET, JRF",
+  },
+  {
+    id: 1,
+    img: process.env.PUBLIC_URL + "/images/team-02.jpg",
+    name: "Mr.Zahid Ahmad Lone",
+    designation: "Coordinator",
+    title: "Specialization-Disability studies.",
+    qual: "MSW,PhD(Pursuing)UGC-NET",
+  },
+  {
+    id: 2,
+    img: process.env.PUBLIC_URL + "/images/team-03.jpg",
+    name: "Ms.Faryalla Farooq",
+    designation: "Spokesperson",
+    title: "Specialization- Working With Children, Youth",
+    qual: "B.A,MSW",
+  },
+  {
+    id: 3,
+    img: process.env.PUBLIC_URL + "/images/team-03.jpg",
+    name: "Ms.Seerat Jan",
+    designation: "Organizer",
+    title: "Specialization- Working With Women, Elderly",
+    qual: "B.A, MSW",
+  },
+  {
+    id: 4,
+    img: process.env.PUBLIC_URL + "/images/team-05.jpg",
+    name: "Mr.Anzar Ul Aijaz",
+    designation: "Member",
+    title: "Specialization-Counselling Skills in Drug De-Addiction",
+    qual: " MSW (Pursuing) Drug De-Addiction (6 months certificate course)-completed",
+  },
 ];

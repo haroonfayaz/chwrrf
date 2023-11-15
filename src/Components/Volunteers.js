@@ -1,12 +1,13 @@
 import React from "react";
 import { Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { volunteers } from "../data/Constants";
 
 const Volunteers = () => {
   const navigate = useNavigate();
-  const handleNavigate=()=>{
-    navigate("/")
-  }
+  const handleNavigate = () => {
+    navigate("/");
+  };
   return (
     <Box>
       <Container>
@@ -26,138 +27,25 @@ const Volunteers = () => {
             <div className="team-wrapper row">
               <div className="col-lg-8 sm-padding">
                 <div className="team-wrap row">
-                 
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                    <div className="team-details">
-                      <img 
-                      src={process.env.PUBLIC_URL +"/images/team-2.jpg"} 
-                      alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Dr. Aadil Bashir Wani
-                          <span>
-                            Sr.Assistant Professor Social work University of
-                            Kashmir Child Rights Expert{" "}
-                          </span>
-                        </h3>
+                  {volunteers.map((vol, index) => (
+                    <div
+                      className="col-md-4"
+                      style={{
+                        padding: "5px",
+                      }}
+                      key={index}
+                    >
+                      <div className="team-details">
+                        <img src={vol.img} alt="team" />
+                        <div className="hover">
+                          <h3>
+                            {vol.name}
+                            <span>{vol.qual}</span>
+                          </h3>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    <div className="team-details">
-                      <img
-                      src={process.env.PUBLIC_URL +"/images/team-3.png"} 
-                        alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Dr. Faroze Ahmad Khan
-                          <span>
-                            Gastroenterologist Health Deptt. J&K Health Expert
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                    <div className="team-details">
-                      <img 
-                      src={process.env.PUBLIC_URL +"/images/team-4.jpg"} 
-                      alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Alfred Gnanaolivu{" "}
-                          <span>
-                            Consultant at Freelance Consultancy & Training Eco
-                            Foundation for Social Alternative EFSA) Bengaluru,
-                            Karnataka, India
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                    <div className="team-details">
-                      <img 
-                      src={process.env.PUBLIC_URL +"/images/team-5.jpg"} 
-                      alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Ms. Affarmand Rashid
-                          <span>
-                            Assistant Director incharge of SOS children’s
-                            village of Srinagar. Experienced Developmental
-                            Practitioner on Child Rights, Women Empowerment and
-                            Youth Development.
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                    <div className="team-details">
-                      <img 
-                      src={process.env.PUBLIC_URL +"/images/team-6.jpg"} 
-                      alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Mr. Nasir Rahim{" "}
-                          <span>
-                            Senior Child Rights Practitioner and Youth
-                            Development Expert. SOS Children’s Village of India.
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-                 
-                  <div
-                    className="col-md-4"
-                    style={{
-                      padding: "5px",
-                    }}
-                  >
-                    {" "}
-                    <div className="team-details">
-                      <img 
-                      src={process.env.PUBLIC_URL +"/images/team-7.jpg"} 
-                      alt="team" />
-                      <div className="hover">
-                        <h3>
-                          Dr. Basharat Ahmad Bhat{" "}
-                          <span>PhD Life Sciences University of Kashmir</span>
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
               <div className="col-lg-4 sm-padding">

@@ -2,16 +2,13 @@ import React from "react";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { future_campaigns } from "../data/Constants";
 
 const CampaignsComponent = () => {
   const customNavText = ["<span>Prev</span>", "<span>Next</span>"];
 
-  const navigate = useNavigate();
-  const handleButtonblog = () => {
-    navigate("/blog");
-  };
+
   const responsiveSettings = {
     0: {
       items: 1,

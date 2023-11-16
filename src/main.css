@@ -131,6 +131,8 @@
   text-decoration: none;
   transition: ease 0.3s;
   height: 50px;
+  outline: none !important;
+  border: none;
 }
 
 .button {
@@ -306,6 +308,9 @@ h2 {
   z-index: 1;
   overflow: hidden;
 }
+.team-content{
+  margin-top: 40px;
+}
 .team-wrap {
   padding: 0 30px;
 }
@@ -461,44 +466,15 @@ h2 {
 }
 .owl-carousel {
   position: relative;
-  /* cursor: pointer; */
 }
-/* .owl-theme .owl-nav {
-  position: absolute;
-  z-index: 1;
-  top: 20%;
-  width: 100%;
-  font-size: 80px;
-  color: #f8b864;
-  height: 100%;
-  border: none;
-  border-radius: 50%;
-  outline: none;
-} */
+
 
 .owl-theme .owl-nav1 button:hover {
-  background-color: #B0926A;
+  background-color: #b0926a;
   border: none !important;
   outline: none !important;
   transform: scale(1.2);
 }
-
-/* .owl-nav button {
-  font-size: 99px;
-  color: #f8b864;
-  width: 70px;
-  outline: none !important;
-
-  background-color: #fff;
-} */
-/* .owl-nav button:first-child {
-  position: absolute;
-  left: 0;
-}
-.owl-nav button:last-child {
-  position: absolute;
-  right: 0;
-} */
 
 .owl-theme .owl-nav1 {
   position: absolute;
@@ -512,10 +488,7 @@ h2 {
   outline: none !important;
 }
 
-
-
 .owl-nav1 button {
-  font-size: 30px;
   color: white;
   outline: none !important;
   border-radius: 20%;
@@ -733,15 +706,15 @@ span.date {
   }
 
   .carousel-caption {
-    margin-bottom: 120px;
+    margin-bottom: 20px;
   }
 
-  .carousel-caption h2 {
-    font-size: 36px;
+  .carousel-caption h3 {
+    font-size: 16px;
   }
 
   .carousel-caption p {
-    font-size: 16px;
+    font-size: 10px;
   }
 }
 
@@ -759,12 +732,103 @@ span.date {
     box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
     border: none;
     border-radius: 5px;
-    height: 400px;
+    height: 300px;
     padding-bottom: 10px;
     margin-bottom: 20px;
+    place-items: center;
   }
   .card img {
-    /* max-width: 100%; */
     height: 150px;
+  }
+  .card h5 {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .card p {
+    font-size: 10px;
+  }
+  .read-more-link {
+    display: inline-block;
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .read-more-link:hover {
+    cursor: pointer;
+  }
+  .owl-theme .owl-nav1 {
+    position: absolute;
+    z-index: 1;
+    top: 93%;
+    width: 100%;
+    font-size: 10px;
+    color: #f8b864;
+    border: none !important;
+    border-radius: 50% !important;
+    outline: none !important;
+    display: none;
+  }
+}
+
+/* Styles for screens smaller than 576px */
+@media (max-width: 768px) {
+  .team-details img {
+    width: 90%;
+  }
+
+  .team-details h3 {
+    font-size: 15px;
+  }
+
+  .team-details .hover {
+    padding: 50px 0 10px 0;
+  }
+}
+
+/* Styles for screens between 576px and 767px */
+@media (min-width: 576px) and (max-width: 767px) {
+  .team-details img {
+    width: 100%;
+    
+  }
+
+  .team-details h3 {
+    font-size: 18px;
+  }
+
+  .team-details .hover {
+    padding: 60px 0 12px 0;
+  }
+}
+
+/* Styles for screens between 768px and 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+  .team-details img {
+    width: 100%;
+  }
+
+  .team-details h3 {
+    font-size: 18px;
+  }
+
+  .team-details .hover {
+    padding: 70px 0 15px 0;
+  }
+}
+
+/* Styles for screens between 992px and 1199px */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .team-details img {
+    width: 100%;
+  }
+
+  .team-details h3 {
+    font-size: 18px;
+  }
+
+  .team-details .hover {
+    padding: 70px 0 15px 0;
   }
 }

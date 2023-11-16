@@ -229,7 +229,7 @@ export const volunteers = [
   },
   {
     id: 2,
-    img: process.env.PUBLIC_URL + "/images/team-1.jpg",
+    img: process.env.PUBLIC_URL + "/images/team-4.jpg",
     name: "Alfred Gnanaolivu",
     qual: "Consultant at Freelance Consultancy & Training Eco Foundation for Social Alternative EFSA) Bengaluru,Karnataka, India",
   },

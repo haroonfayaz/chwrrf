@@ -35,8 +35,6 @@ const TeamComponent = () => {
           autoplay={true}
           navContainerClass="owl-nav"
           responsive={responsiveSettings}
-
-
         >
         {
           team_members.map((member,index)=>(

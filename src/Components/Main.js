@@ -77,17 +77,16 @@ const Main = () => {
             }}
           >
             <Typography
-              variant="h4"
               sx={{
-                pt: 2,
-                fontSize: { xs: "28px" },
+                p: 2,
+                fontSize: { xs: "20px",md:"22px" },
                 display: { xs: "block", md: "flex" },
                 fontWeight: 500,
                 color: "white",
                 textDecoration: "underline",
               }}
             >
-              News Link and Notifications
+              News Link & Notifications
             </Typography>
             <div className="scrolling-container">
               <div className="scrolling-content">

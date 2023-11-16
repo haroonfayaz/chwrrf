@@ -11,13 +11,11 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar } from "@mui/material";
 import { Link as ScrollLink } from "react-scroll";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import {Link } from "react-router-dom";
 import { menuItems } from "../data/Constants";
 
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [anchorElNav, setAnchorElNav] = useState(null);
 
   const handleOpenNavMenu = (event) => {
@@ -26,10 +24,6 @@ const Navbar = () => {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
-
-    if (location.pathname === "/blog") {
-      navigate("/");
-    }
   };
 
   return (
@@ -129,7 +123,7 @@ const Navbar = () => {
             </Box>
             <Avatar
               alt="CHWRRF Logo"
-              src="images/logo-2.png"
+              src={process.env.PUBLIC_URL + "/images/logo-2.png"}
               sx={{
                 width: 50,
                 height: 50,

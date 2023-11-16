@@ -21,7 +21,7 @@ const Main = () => {
                       className="d-block w-100"
                       alt={carousel.title}
                     />
-                    <div className="carousel-caption d-none d-md-block">
+                    <div className="carousel-caption d-md-block">
                       <h5 className="animate__animated animate__fadeInLeft">
                         {carousel.tagline}
                       </h5>

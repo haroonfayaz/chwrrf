@@ -235,7 +235,7 @@ h2 {
   letter-spacing: -0.04em;
 }
 .causes-details p {
-  font-size: 20px;
+  font-size: 16px;
   color: #282828;
   margin: 0 0 8px;
   font-weight: 300;
@@ -280,6 +280,8 @@ h2 {
 .about-wrap img:hover {
   opacity: 0.8;
 }
+/* .about-wrap p {
+font-size: 14px;} */
 
 .profile-wrap {
   background-color: #fafafa;
@@ -296,11 +298,17 @@ h2 {
 
 .profile-wrap span {
   display: block;
-  font-size: 12px;
+  font-size: 10px;
   font-family: "Jost", sans-serif;
   color: #999;
   margin-top: 5px;
 }
+.profile-wrap p {
+  font-size: 12px;
+  font-family: "Jost", sans-serif;
+  margin-top: 5px;
+}
+
 
 .team-section {
   position: relative;

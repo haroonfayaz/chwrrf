@@ -20,7 +20,7 @@ const Mission = () => {
                             <h3>Dr. Bilal Ahmad Khan <span>Founder & Chairman of CHWRRF.</span></h3>
                             <p>BBA, MSW, PhD.</p>
                             <p>Social Audit Coordinator- PM POSHAN Scheme<br/>Fellow- Tribal Research Institute<br/>Doctoral Fellow- Indian Council of Social Science Research<br/>Research Assistant- Indian Council of Social Science Research<br/>L7 Trainer – Quess Corp Formerly IKYA Human Capital solutions Pvt. Ltd.</p>
-                            <img src="images/sign.png" alt="sign"/>
+                            <img src={process.env.PUBLIC_URL +"/images/sign.png"} alt="sign"/>
                         </div>
                     </div>
                     <div class="col-md-8 xs-padding">

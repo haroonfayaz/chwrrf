@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/chwrrf/static/css/main.29d5b12e.css",
+    "main.css": "/chwrrf/static/css/main.97c630c1.css",
     "main.js": "/chwrrf/static/js/main.018a284a.js",
     "static/media/page-header-bg.jpg": "/chwrrf/static/media/page-header-bg.2781e03c24351eebeb40.jpg",
     "index.html": "/chwrrf/index.html",
-    "main.29d5b12e.css.map": "/chwrrf/static/css/main.29d5b12e.css.map",
+    "main.97c630c1.css.map": "/chwrrf/static/css/main.97c630c1.css.map",
     "main.018a284a.js.map": "/chwrrf/static/js/main.018a284a.js.map"
   },
   "entrypoints": [
-    "static/css/main.29d5b12e.css",
+    "static/css/main.97c630c1.css",
     "static/js/main.018a284a.js"
   ]
 }

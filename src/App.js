@@ -12,22 +12,13 @@ const theme = createTheme({
 });
 
 function App() {
-  // const routes = useRoutes([
-  //   {
-  //     element: <Home />,
-  //     path: "/",
-  //   },
-  //   {
-  //     element: <BlogPost />,
-  //     path: "/blog",
-  //   },
-  // ]);
+
   return (
     <>
       <ThemeProvider theme={theme}>
         <Navbar />
         <Routes>
-          <Route exact path="/" index element={<Home />} />
+          <Route exact path="/chwrrf" index element={<Home />} />
           <Route exact path="/blog" element={<BlogPost />} />
         </Routes>
       </ThemeProvider>

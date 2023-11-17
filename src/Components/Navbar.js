@@ -46,7 +46,7 @@ const Navbar = () => {
               variant="h6"
               noWrap
               component="a"
-              href="/"
+              href="/chwrrf"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -101,7 +101,7 @@ const Navbar = () => {
                     fontSize: 20,
                   }}
                 >
-                  <Link to="/">Home</Link>
+                  <Link to="/chwrrf">Home</Link>
                 </Typography>
                 {menuItems.map((item) => (
                   <MenuItem key={item.route} onClick={handleCloseNavMenu}>
@@ -136,7 +136,7 @@ const Navbar = () => {
               variant="h5"
               noWrap
               component="a"
-              href="/"
+              href="/chwrrf"
               sx={{
                 mr: 2,
                 display: { xs: "flex", md: "none" },
@@ -158,7 +158,7 @@ const Navbar = () => {
                 alignItems: "center",
               }}
             >
-             <Link to ="/"
+             <Link to ="/chwrrf"
              style={{
                   textDecoration: "none",
                   color:"black",

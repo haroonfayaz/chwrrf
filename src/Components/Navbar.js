@@ -11,9 +11,8 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar } from "@mui/material";
 import { Link as ScrollLink } from "react-scroll";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { menuItems } from "../data/Constants";
-
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -28,36 +27,22 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <AppBar position="static" sx={{ backgroundColor: "white", height: 90 }}>
         <Container maxWidth="xxl">
-          <Toolbar disableGutters>
+          <Toolbar>
             <Avatar
               alt="CHWRRF Logo"
-              src={process.env.PUBLIC_URL + '/images/logo-2.png'}
+              src={process.env.PUBLIC_URL + "/images/logo-2.png"}
               sx={{
                 width: 50,
                 height: 50,
-                mr: 1,
+                ml: 8,
+                mr: 8,
                 display: { xs: "none", md: "flex" },
               }}
               variant="rounded"
             />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/chwrrf"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "black",
-                textDecoration: "none",
-              }}
-            >
-              CHWRRF
-            </Typography>
+
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
@@ -132,24 +117,7 @@ const Navbar = () => {
               }}
               variant="rounded"
             />
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href="/chwrrf"
-              sx={{
-                mr: 2,
-                display: { xs: "flex", md: "none" },
-                flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "black",
-                textDecoration: "none",
-              }}
-            >
-              CHWRRF
-            </Typography>
+
             <Box
               sx={{
                 flexGrow: 1,
@@ -158,30 +126,38 @@ const Navbar = () => {
                 alignItems: "center",
               }}
             >
-             <Link to ="/chwrrf"
-             style={{
+              <Link
+                to="/chwrrf"
+                style={{
                   textDecoration: "none",
-                  color:"black",
-                }}>
-
-              <Typography
-                sx={{
-                  fontWeight: 500,
-                  fontSize: 20,
-
+                  color: "black",
                 }}
               >
-                Home
-              </Typography>
-             </Link>
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: 15,
+                    p: 4,
+                    "&:hover": {
+                      color: "#f8b864",
+                    },
+                  }}
+                >
+                  Home
+                </Typography>
+              </Link>
               {menuItems.map((item) => (
                 <MenuItem key={item.route} onClick={handleCloseNavMenu}>
                   <Typography
-                    style={{
+                   
+                    sx={{
                       textDecoration: "none",
                       color: "black",
-                      fontWeight: 500,
-                      fontSize: 20,
+                      fontWeight: 600,
+                      fontSize: 15,
+                      "&:hover": {
+                      color: "#f8b864",
+                    },
                     }}
                   >
                     <ScrollLink
@@ -203,13 +179,20 @@ const Navbar = () => {
                 <Button
                   variant="contained"
                   sx={{
-                    fontWeight: 900,
+                    fontWeight: 600,
                     height: "40px",
-                    fontSize: "16px",
+                    width: "150px",
+                    fontSize: "13px",
                     backgroundColor: "#f8b864",
+                    "&:hover": {
+                      textDecoration: "underline",
+                      backgroundColor: "#f8b864",
+
+
+                    },
                   }}
                 >
-                  Donate
+                  Donate Now
                 </Button>
               </IconButton>
             </Box>

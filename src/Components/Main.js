@@ -8,7 +8,7 @@ const Main = () => {
     <Box>
       <Grid container spacing={0}>
         <Grid item xs={12} md={8}>
-          <Box sx={{ border: "none", pt: 2, borderRadius: 3 }}>
+          <Box sx={{ border: "none", pt: 2, borderRadius: 3, mr: { md: 0 } }}>
             <div id="carouselExampleCaptions" className="carousel">
               <div className="carousel-inner">
                 {Main_carousel.map((carousel, index) => (
@@ -71,15 +71,17 @@ const Main = () => {
             sx={{
               p: 2,
               backgroundColor: "#f8b864",
-              borderRadius: 3,
+              borderRadius: 1,
               height: "600px",
               m: { xs: 4 },
+              ml: { md: 0 },
+              Width: "100%",
             }}
           >
             <Typography
               sx={{
                 p: 2,
-                fontSize: { xs: "20px",md:"22px" },
+                fontSize: { xs: "20px", md: "22px" },
                 display: { xs: "block", md: "flex" },
                 fontWeight: 500,
                 color: "white",

@@ -5,7 +5,11 @@ import { Main_carousel, news_data, promo_Options } from "../data/Constants";
 
 const Main = () => {
   return (
-    <Box>
+    <Box sx={{
+          position: "relative",  
+          top: "-30px",  
+
+ }}>
       <Grid container spacing={0}>
         <Grid item xs={12} md={8}>
           <Box sx={{ border: "none", pt: 2, borderRadius: 3, mr: { md: 0 } }}>
@@ -70,6 +74,7 @@ const Main = () => {
           <Box
             sx={{
               p: 2,
+              mt:0,
               backgroundColor: "#f8b864",
               borderRadius: 1,
               height: "600px",

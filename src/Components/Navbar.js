@@ -24,10 +24,13 @@ const Navbar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
+  
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "white", height: 90 }}>
+      <AppBar
+        position="sticky"
+        sx={{ backgroundColor: "white", height: 80, mb: 0 }}
+      >
         <Container maxWidth="xxl">
           <Toolbar>
             <Avatar
@@ -149,15 +152,14 @@ const Navbar = () => {
               {menuItems.map((item) => (
                 <MenuItem key={item.route} onClick={handleCloseNavMenu}>
                   <Typography
-                   
                     sx={{
                       textDecoration: "none",
                       color: "black",
                       fontWeight: 600,
                       fontSize: 15,
                       "&:hover": {
-                      color: "#f8b864",
-                    },
+                        color: "#f8b864",
+                      },
                     }}
                   >
                     <ScrollLink
@@ -187,8 +189,6 @@ const Navbar = () => {
                     "&:hover": {
                       textDecoration: "underline",
                       backgroundColor: "#f8b864",
-
-
                     },
                   }}
                 >

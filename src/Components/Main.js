@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography,Divider } from "@mui/material";
 import React from "react";
 import "../main.css";
 import { Main_carousel, news_data, promo_Options } from "../data/Constants";
@@ -145,6 +145,10 @@ const Main = () => {
                     >
                       {data.date}
                     </Typography>
+                    <Divider
+                      sx={{backgroundColor:"white",
+                      maxWidth: '100%'}}
+                    />
                   </div>
                 ))}
               </div>

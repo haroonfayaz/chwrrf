@@ -5,7 +5,7 @@ import "owl.carousel/dist/assets/owl.theme.default.css";
 import { Link } from "react-router-dom";
 import { future_campaigns } from "../data/Constants";
 
-const CampaignsComponent = () => {
+const ProgramsComponent = () => {
   const customNavText = ["<span>Prev</span>", "<span>Next</span>"];
 
 
@@ -23,9 +23,9 @@ const CampaignsComponent = () => {
   return (
     <div>
       <div className="container-fluid">
-        <div className="line tem" id="campaigns">
+        <div className="line tem" id="Programs">
           <div className="section-heading text-center mb-40">
-            <h2>Recent Campaigns</h2>
+            <h2>Future Programs</h2>
             <span className="heading-border"></span>
           </div>
         </div>
@@ -63,4 +63,4 @@ const CampaignsComponent = () => {
   );
 };
 
-export default CampaignsComponent;
+export default ProgramsComponent;

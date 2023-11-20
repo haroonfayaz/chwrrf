@@ -24,12 +24,15 @@ const Navbar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-  
+  const toHome =()=>{
+    window.scrollTo(0, 0);
+  }
+
   return (
     <>
       <AppBar
         position="sticky"
-        sx={{ backgroundColor: "white", height: 80, mb: 0 }}
+        sx={{ backgroundColor: "white", height: 65, mb: 0 }}
       >
         <Container maxWidth="xxl">
           <Toolbar>
@@ -81,16 +84,26 @@ const Navbar = () => {
                   },
                 }}
               >
-                <Typography
+                <Link
+                  to="/chwrrf"
                   style={{
                     textDecoration: "none",
                     color: "black",
-                    fontWeight: 500,
-                    fontSize: 20,
                   }}
                 >
-                  <Link to="/chwrrf">Home</Link>
-                </Typography>
+                  <Typography
+                    sx={{
+                      textDecoration: "none",
+                      color: "black",
+                      fontWeight: 400,
+                      fontSize: 16,
+                      pl: 2,
+                    }}
+                    onClick={toHome}
+                  >
+                    Home
+                  </Typography>
+                </Link>
                 {menuItems.map((item) => (
                   <MenuItem key={item.route} onClick={handleCloseNavMenu}>
                     <Typography>
@@ -140,11 +153,13 @@ const Navbar = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: 15,
-                    p: 4,
+                    p: 3,
                     "&:hover": {
                       color: "#f8b864",
                     },
                   }}
+                  onClick={toHome}
+
                 >
                   Home
                 </Typography>

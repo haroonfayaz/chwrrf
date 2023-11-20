@@ -118,12 +118,12 @@ export const menuItems = [
     target: "team",
   },
   {
-    route: "Campaigns",
-    target: "campaigns",
-  },
-  {
     route: "Volunteers",
     target: "volunteers",
+  },
+  {
+    route: "Campaigns",
+    target: "campaigns",
   },
 ];
 

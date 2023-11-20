@@ -5,7 +5,6 @@ import Footer from '../Components/Footer';
 
 const BlogPost = () => {
   useEffect(() => {
-    // Scroll to the top when the component mounts
     window.scrollTo(0, 0);
   }, []);
   return (

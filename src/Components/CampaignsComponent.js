@@ -44,7 +44,7 @@ const CampaignsComponent = () => {
         >
           {future_campaigns.map((camp, index) => (
             <div
-              className={`card ${index === 0 ? " " : "d-none d-md-block"}`}
+              className={`card ${index === 0 ? " " : " d-md-block"}`}
               key={camp.id}
             >
               <img src={camp.img} className="card-img-top" alt={camp.title} />

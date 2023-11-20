@@ -128,8 +128,11 @@ const Navbar = () => {
               sx={{
                 width: 50,
                 height: 50,
-                mr: 1,
-                display: { xs: "flex", md: "none" },
+                alignItems:"center",
+                justifyContent:"center",
+                display: { xs: "flex",sm:"flex", md: "none" },
+                marginRight: 20,
+
               }}
               variant="rounded"
             />
@@ -196,10 +199,11 @@ const Navbar = () => {
                 <Button
                   variant="contained"
                   sx={{
-                    fontWeight: 600,
+                    fontWeight: 400,
+                    display:{xs:"none",sm:"none",md:"flex"},
                     height: "40px",
-                    width: "150px",
-                    fontSize: "13px",
+                    width: "120px",
+                    fontSize: "12px",
                     backgroundColor: "#f8b864",
                     "&:hover": {
                       textDecoration: "underline",

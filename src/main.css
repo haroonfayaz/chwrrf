@@ -407,6 +407,7 @@ h2 {
 
 .carousel-inner {
   padding: 1em;
+  height: 550px;
 }
 .carousel-control-prev,
 .carousel-control-next {
@@ -417,7 +418,7 @@ h2 {
   color: white;
   top: 50%;
   border: none;
-} 
+}
 .testimonial-item {
   background-color: #fafafa;
   padding: 30px;
@@ -487,22 +488,9 @@ h2 {
   transform: scale(1.2);
 }
 
-/* .owl-nav button {
-  font-size: 99px;
-  color: #f8b864;
-  width: 70px;
-  outline: none !important;
-
-  background-color: #fff;
-} */
-/* .owl-nav button:first-child {
-  position: absolute;
-  left: 0;
+.owl-nav {
+  display: none;
 }
-.owl-nav button:last-child {
-  position: absolute;
-  right: 0;
-} */
 
 .owl-theme .owl-nav1 {
   position: absolute;
@@ -717,8 +705,6 @@ span.date {
   opacity: 0.8;
   text-decoration: underline;
 }
-
-
 
 @media (max-width: 767px) {
   .carousel-item img {

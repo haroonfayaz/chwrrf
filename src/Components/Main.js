@@ -1,15 +1,16 @@
-import { Box, Container, Grid, Typography,Divider } from "@mui/material";
+import { Box, Container, Grid, Typography, Divider } from "@mui/material";
 import React from "react";
 import "../main.css";
 import { Main_carousel, news_data, promo_Options } from "../data/Constants";
 
 const Main = () => {
   return (
-    <Box sx={{
-          position: "relative",  
-          top: "-30px",  
-
- }}>
+    <Box
+      sx={{
+        position: "relative",
+        top: "-30px",
+      }}
+    >
       <Grid container spacing={0}>
         <Grid item xs={12} md={8}>
           <Box sx={{ border: "none", pt: 2, borderRadius: 3, mr: { md: 0 } }}>
@@ -74,10 +75,10 @@ const Main = () => {
           <Box
             sx={{
               p: 2,
-              mt:0,
+              mt: 0,
               backgroundColor: "#f8b864",
               borderRadius: 1,
-              height: "600px",
+              height: "550px",
               m: { xs: 4 },
               ml: { md: 0 },
               Width: "100%",
@@ -146,8 +147,7 @@ const Main = () => {
                       {data.date}
                     </Typography>
                     <Divider
-                      sx={{backgroundColor:"white",
-                      maxWidth: '100%'}}
+                      sx={{ backgroundColor: "white", maxWidth: "100%" }}
                     />
                   </div>
                 ))}
@@ -157,17 +157,37 @@ const Main = () => {
         </Grid>
       </Grid>
 
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid
+        container
+        rowSpacing={1}
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        // maxWidth="90%"
+        sx={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Container
           sx={{
-            display: { xs: "block", md: "flex" },
+            display: { xs: "block", sm: "block", md: "flex" },
             backgroundColor: "white",
             position: "relative",
-            top: "-80px",
+            top: "-140px",
+            borderRadius: 2,
           }}
         >
           {promo_Options.map((promo) => (
-            <Grid item xs={12} md={4}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              sx={{
+                "& > :not(:last-child)": {
+                  borderRight: "1px dashed #ff1",
+                },
+              }}
+            >
               <div className="promo-content" key={promo.id}>
                 <img src={promo.img} alt="prmo icon" />
                 <h3>{promo.title}</h3>

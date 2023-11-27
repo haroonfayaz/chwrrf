@@ -8,11 +8,12 @@ import Volunteers from "../Components/Volunteers";
 import CampaignsComponent from "../Components/CampaignsComponent";
 import ProgramsComponent from "../Components/ProgramsComponent";
 import TeamComponent from "../Components/TeamComponent";
-
+import Navbar from "../Components/Navbar";
 
 const Home = () => {
   return (
     <Box >
+      <Navbar/>
       <Main />
       <About />
       <Mission/>

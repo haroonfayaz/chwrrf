@@ -294,4 +294,20 @@ export const team_members = [
     title: "Specialization-Counselling Skills in Drug De-Addiction",
     qual: " MSW (Pursuing) Drug De-Addiction (6 months certificate course)-completed",
   },
+  {
+    id: 5,
+    img: process.env.PUBLIC_URL + "/images/team-06.jpeg",
+    name: "Mr.Danish Iqbal mattoo",
+    designation: "Program Manager/coordinator",
+    title: "Specialization-HR & Finance",
+    qual: "MBA, MPhil",
+  },  {
+    id: 6,
+    img: process.env.PUBLIC_URL + "/images/team-07.jpeg",
+    name: "Er. Mohammad Faizan Bhat",
+    designation: "State coordinator",
+    title: "Specialization-IT",
+    qual: "BTech (NIT)",
+  },
 ];
+

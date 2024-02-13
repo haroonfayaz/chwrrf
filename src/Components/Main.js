@@ -137,6 +137,7 @@ const Main = () => {
                         display: { xs: "block", md: "flex" },
                         fontWeight: 500,
                         color: "white",
+                        padding:"10px",
                         "&::after": {
                           textDecoration: "underline",
                           cursor: "pointer",
@@ -144,7 +145,7 @@ const Main = () => {
                       }}
                     >
                       <a href={data.link} target="_blank">
-                        {data.link}
+                      <span style={{ whiteSpace: 'pre-line',textDecoration:"none" }}>{data.description}</span>
                       </a>
                     </Typography>
                     <Typography
@@ -159,7 +160,7 @@ const Main = () => {
                         },
                       }}
                     >
-                      {data.date}
+                      {data.date.substring(0,10)}
                     </Typography>
                     <Divider
                       sx={{ backgroundColor: "white", maxWidth: "100%" }}

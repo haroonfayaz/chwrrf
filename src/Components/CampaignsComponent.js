@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import { Link } from "react-router-dom";
 import { future_campaigns } from "../data/Constants";
+import { getAllEvents } from "../api";
 
 const CampaignsComponent = () => {
   const customNavText = ["<span>Prev</span>", "<span>Next</span>"];
+  const [events, setEvents] = useState([]);
 
+  const fetchEvents = async () => {
+    try {
+      const eventsData = await getAllEvents();
+      setEvents(eventsData);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const responsiveSettings = {
     0: {
@@ -42,15 +55,22 @@ const CampaignsComponent = () => {
           navText={customNavText}
           responsive={responsiveSettings}
         >
-          {future_campaigns.map((camp, index) => (
+          {events.map((camp, index) => (
             <div
               className={`card ${index === 0 ? " " : " d-md-block"}`}
               key={camp.id}
             >
-              <img src={camp.img} className="card-img-top" alt={camp.title} />
+              <img
+                src={`http://13.40.5.17:8080/api/event/image/${encodeURIComponent(
+                  camp.photoPath
+                )}`}
+                className="card-img-top"
+                alt={camp.title}
+              />
+            
               <div className="card-body">
                 <h5 className="card-title">{camp.title}</h5>
-                <p className="card-text">{camp.desc}</p>
+                <p className="card-text">{camp.description}</p>
                 <Link to="/blog" className="read-more-link">
                   Read more
                 </Link>

@@ -25,14 +25,14 @@ const ProgramsComponent = () => {
     },
   };
 
-  const fetchPlans = async () => {
-    try {
-      const responseData = await getAllFuturePlans();
-      console.log(responseData);
-      setPlan(responseData);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
+  const fetchPlans = () => {
+    getAllFuturePlans()
+      .then(data => {
+        setPlan(data);
+      })
+      .catch(error => {
+        console.error("Error fetching events:", error);
+      });
   };
   useEffect(() => {
     fetchPlans();

@@ -26,10 +26,15 @@ const CampaignsComponent = () => {
   };
 
 
-  const fetchEvents = async () => {
+  const fetchEvents = () => {
     try {
-      const eventsData = await getAllEvents();
-      setEvents(eventsData);
+      getAllEvents()
+        .then(data => {
+          setEvents(data);
+        })
+        .catch(e => {
+          console.error("Error fetching events:", e);
+        });
     } catch (error) {
       console.error("Error fetching events:", error);
     }

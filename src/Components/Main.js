@@ -6,14 +6,16 @@ import { getAllNotifications } from "../api";
 
 const Main = () => {
   const [notifications, setNotification] = useState([]);
-  const fetchNotify = async () => {
-    try {
-      const responseData = await getAllNotifications();
-      setNotification(responseData);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
+  const fetchNotify = () => {
+    getAllNotifications()
+      .then(responseData => {
+        setNotification(responseData);
+      })
+      .catch(error => {
+        console.error("Error fetching notifications:", error);
+      });
   };
+  
   useEffect(() => {
     fetchNotify();
   }, []);

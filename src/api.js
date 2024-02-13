@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const baseURL = "http://13.40.5.17:8080/api/";
+// const baseURL = "http://13.40.5.17:8080/api/";
+const baseURL = "https://admin.chwrrf.org/api/";
+
 const instance = axios.create({
   baseURL,
   timeout: 10000,

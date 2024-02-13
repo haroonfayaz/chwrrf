@@ -108,7 +108,7 @@ const Main = () => {
                 textDecoration: "underline",
               }}
             >
-              News Link & Notifications
+              News & Notifications
             </Typography>
             <div className="scrolling-container">
               <div className="scrolling-content">

@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from "react";
-import OwlCarousel from "react-owl-carousel";
-import "owl.carousel/dist/assets/owl.carousel.css";
-import "owl.carousel/dist/assets/owl.theme.default.css";
 import { Link } from "react-router-dom";
-import { future_campaigns } from "../data/Constants";
 import { getAllEvents } from "../eventApi";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 const CampaignsComponent = () => {
-  const customNavText = ["<span>Prev</span>", "<span>Next</span>"];
   const [events, setEvents] = useState([]);
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+
 
   const fetchEvents = async () => {
     try {
@@ -22,17 +38,6 @@ const CampaignsComponent = () => {
     fetchEvents();
   }, []);
 
-  const responsiveSettings = {
-    0: {
-      items: 1,
-    },
-    600: {
-      items: 2,
-    },
-    1000: {
-      items: 3,
-    },
-  };
   return (
     <div>
       <div className="container-fluid">
@@ -42,20 +47,8 @@ const CampaignsComponent = () => {
             <span className="heading-border"></span>
           </div>
         </div>
-
-        <OwlCarousel
-          items={3}
-          className="owl-theme"
-          loop
-          nav
-          margin={8}
-          autoplay={true}
-          autoplayHoverPause={true}
-          navContainerClass="owl-nav1"
-          navText={customNavText}
-          responsive={responsiveSettings}
-        >
-          {events.map((camp, index) => (
+        <Carousel responsive={responsive} infinite={true}>
+          {events?.map((camp, index) => (
             <div
               className={`card ${index === 0 ? " " : " d-md-block"}`}
               key={camp.id}
@@ -67,7 +60,7 @@ const CampaignsComponent = () => {
                 className="card-img-top"
                 alt={camp.title}
               />
-            
+
               <div className="card-body">
                 <h5 className="card-title">{camp.title}</h5>
                 <p className="card-text">{camp.description}</p>
@@ -77,7 +70,7 @@ const CampaignsComponent = () => {
               </div>
             </div>
           ))}
-        </OwlCarousel>
+        </Carousel>
       </div>
     </div>
   );

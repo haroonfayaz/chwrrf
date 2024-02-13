@@ -62,13 +62,12 @@ const ProgramsComponent = () => {
               key={camp.id}
             >
                  <img
-                src={`http://13.40.5.17:8080/api/program/image/${encodeURIComponent(
+                src={`https://admin.chwrrf.org/api/program/image/${encodeURIComponent(
                   camp.photoPath
                 )}`}
                 className="card-img-top"
                 alt={camp.title}
               />
-              {/* <img src={camp.img} className="card-img-top" alt={camp.title} /> */}
               <div className="card-body">
                 <h5 className="card-title">{camp.title}</h5>
                 <p className="card-text">{camp.description}</p>

@@ -61,7 +61,7 @@ const CampaignsComponent = () => {
               key={camp.id}
             >
               <img
-                src={`http://13.40.5.17:8080/api/event/image/${encodeURIComponent(
+                src={`https://admin.chwrrf.org/api/program/image/${encodeURIComponent(
                   camp.photoPath
                 )}`}
                 className="card-img-top"

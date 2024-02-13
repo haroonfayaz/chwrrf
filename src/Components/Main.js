@@ -1,9 +1,23 @@
 import { Box, Container, Grid, Typography, Divider } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../main.css";
 import { Main_carousel, news_data, promo_Options } from "../data/Constants";
+import { getAllNotifications } from "../api";
 
 const Main = () => {
+  const [notifications, setNotification] = useState([]);
+  const fetchNotify = async () => {
+    try {
+      const responseData = await getAllNotifications();
+      setNotification(responseData);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+  useEffect(() => {
+    fetchNotify();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -98,14 +112,13 @@ const Main = () => {
             </Typography>
             <div className="scrolling-container">
               <div className="scrolling-content">
-                {news_data.map((data) => (
+                {notifications.map((data) => (
                   <div>
                     <Typography
                       variant="h5"
                       sx={{
                         pt: 2,
                         fontSize: { xs: "18px" },
-
                         display: { xs: "block", md: "flex" },
                         fontWeight: 500,
                         color: "white",
@@ -115,7 +128,7 @@ const Main = () => {
                         },
                       }}
                     >
-                      {data.news_title}
+                      {data.title}
                     </Typography>
                     <Typography
                       variant="body1"
@@ -130,7 +143,9 @@ const Main = () => {
                         },
                       }}
                     >
-                      {data.link_title}
+                      <a href={data.link} target="_blank">
+                        {data.link}
+                      </a>
                     </Typography>
                     <Typography
                       sx={{

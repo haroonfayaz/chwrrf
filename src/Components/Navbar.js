@@ -20,6 +20,10 @@ const Navbar = () => {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+  const handleDonateNowClick = () => {
+    const footerElement = document.getElementById("footer");
+    footerElement.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -85,7 +89,7 @@ const Navbar = () => {
                 }}
               >
                 <Link
-                  to="/chwrrf"
+                  to="/"
                   style={{
                     textDecoration: "none",
                     color: "black",
@@ -146,7 +150,7 @@ const Navbar = () => {
               }}
             >
               <Link
-                to="/chwrrf"
+                to="/"
                 style={{
                   textDecoration: "none",
                   color: "black",
@@ -156,9 +160,11 @@ const Navbar = () => {
                   sx={{
                     fontWeight: 600,
                     fontSize: 15,
-                    p: 3,
+                    p: "15px",
+                    borderRadius:"5px",
                     "&:hover": {
-                      color: "#f8b864",
+                      color: "white",
+                      backgroundColor:"#f8b864"
                     },
                   }}
                   onClick={toHome}
@@ -199,17 +205,19 @@ const Navbar = () => {
                 <Button
                   variant="contained"
                   sx={{
-                    fontWeight: 400,
+                    fontWeight: 600,
                     display:{xs:"none",sm:"none",md:"flex"},
                     height: "40px",
-                    width: "120px",
-                    fontSize: "12px",
+                    width: "150px",
+                    fontSize: "14px",
                     backgroundColor: "#f8b864",
                     "&:hover": {
                       textDecoration: "underline",
                       backgroundColor: "#f8b864",
                     },
                   }}
+                  onClick={handleDonateNowClick}
+
                 >
                   Donate Now
                 </Button>

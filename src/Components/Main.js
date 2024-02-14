@@ -3,19 +3,20 @@ import React, { useEffect, useState } from "react";
 import "../main.css";
 import { Main_carousel, news_data, promo_Options } from "../data/Constants";
 import { getAllNotifications } from "../api";
+import { Link as ScrollLink } from "react-scroll";
 
 const Main = () => {
   const [notifications, setNotification] = useState([]);
   const fetchNotify = () => {
     getAllNotifications()
-      .then(responseData => {
+      .then((responseData) => {
         setNotification(responseData);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching notifications:", error);
       });
   };
-  
+
   useEffect(() => {
     fetchNotify();
   }, []);
@@ -52,12 +53,15 @@ const Main = () => {
                       <p className="animate__animated animate__fadeInBottom">
                         {carousel.desc}
                       </p>
-                      <a
-                        href="#donate"
+                      <ScrollLink
+                        to="footer"
+                        spy={true}
+                        smooth={true}
+                        duration={500}
                         className="button animate__animated animate__fadeInLeft"
                       >
                         Donate
-                      </a>
+                      </ScrollLink>
                     </div>
                   </div>
                 ))}
@@ -139,7 +143,7 @@ const Main = () => {
                         display: { xs: "block", md: "flex" },
                         fontWeight: 500,
                         color: "white",
-                        padding:"10px",
+                        padding: "10px",
                         "&::after": {
                           textDecoration: "underline",
                           cursor: "pointer",
@@ -147,7 +151,14 @@ const Main = () => {
                       }}
                     >
                       <a href={data.link} target="_blank">
-                      <span style={{ whiteSpace: 'pre-line',textDecoration:"none" }}>{data.description}</span>
+                        <span
+                          style={{
+                            whiteSpace: "pre-line",
+                            textDecoration: "none",
+                          }}
+                        >
+                          {data.description}
+                        </span>
                       </a>
                     </Typography>
                     <Typography
@@ -162,7 +173,7 @@ const Main = () => {
                         },
                       }}
                     >
-                      {data.date.substring(0,10)}
+                      {data.date.substring(0, 10)}
                     </Typography>
                     <Divider
                       sx={{ backgroundColor: "white", maxWidth: "100%" }}

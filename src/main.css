@@ -377,11 +377,11 @@ h2 {
 }
 
 .card {
-  margin: 0 0.5em;
+  /* margin: 0 0.5em; */
   box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
   border: none;
   border-radius: 5px;
-  height: 380px;
+  height: 420px;
   width: 80%;
   padding-bottom: 20px;
   margin-bottom: 40px;
@@ -784,4 +784,16 @@ span.date {
   .button:hover {
     padding: 8px 20px;
   }
+}
+
+.react-multiple-carousel__arrow {
+  background: #f8b864 !important;
+  outline: none !important;
+}
+.react-multiple-carousel__arrow:hover {
+  background: #f8b864 !important;
+  outline: none !important;
+}
+.react-multi-carousel-item {
+  margin-right: 0px !important; 
 }

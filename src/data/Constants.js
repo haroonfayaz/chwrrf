@@ -105,7 +105,11 @@ export const promo_Options = [
 ];
 
 export const menuItems = [
+  
   {
+    route: "Home",
+    target: "main",
+  },{
     route: "About",
     target: "about",
   },

@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes} from "react-router-dom";
 import Home from "./Pages/Home";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import BlogPost from "./Pages/BlogPost";
+import Blog from "./Components/Blog";
 
 const theme = createTheme({
   typography: {
@@ -17,7 +17,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route exact path="/" index element={<Home />} />
-          <Route exact path="/blog" element={<BlogPost />} />
+          <Route exact path="/blog" element={<Blog />} />
         </Routes>
       </ThemeProvider>
     </>

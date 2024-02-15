@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAllFuturePlans } from "../ProgramApi";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const ProgramsComponent = () => {
   const [plans, setPlan] = useState([]);
+  const navigate = useNavigate();
+
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -13,7 +15,7 @@ const ProgramsComponent = () => {
     },
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3,
+      items: 4,
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
@@ -25,12 +27,17 @@ const ProgramsComponent = () => {
     },
   };
 
+  const handleClick = (camp) => {
+    navigate("/blog", {
+      state: { camp: camp, data: plans, heading: "Future Programs" },
+    });
+  };
   const fetchPlans = () => {
     getAllFuturePlans()
-      .then(data => {
+      .then((data) => {
         setPlan(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching events:", error);
       });
   };
@@ -64,9 +71,11 @@ const ProgramsComponent = () => {
               <div className="card-body">
                 <h5 className="card-title">{camp.title}</h5>
                 <p className="card-text">{camp.description}</p>
-                <Link to="/blog" className="read-more-link">
-                  Read more
-                </Link>
+                <div onClick={() => handleClick(camp)}>
+                  <Link to="/blog" className="read-more-link">
+                    Read more
+                  </Link>
+                </div>
               </div>
             </div>
           ))}

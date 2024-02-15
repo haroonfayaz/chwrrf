@@ -525,7 +525,6 @@ h2 {
 }
 
 .pager-header {
-  background-image: url(./img/page-header-bg.jpg);
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;
@@ -536,8 +535,12 @@ h2 {
   align-items: center;
 }
 .pager-header h2 {
-  color: #fff;
+  color: black;
   font-size: 42px;
+  background-color: rgba(255, 255, 255, 0.5); 
+  width: fit-content;
+  padding: 10px;
+  border-radius: 5px;
 }
 .pager-header p {
   color: #ddd;
@@ -545,8 +548,12 @@ h2 {
 
 /*Breadcrumb */
 .breadcrumb {
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.5); 
   padding: 0;
+  color: #f8b864;
+  width: fit-content;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .breadcrumb li  {
@@ -557,8 +564,8 @@ h2 {
   font-size: 20px;
 }
 
-.breadcrumb li a:hover {
-  text-decoration: underline;
+.breadcrumb li a {
+  color: #f8b864;
 }
 .breadcrumb .active {
   color: #f8b864;
@@ -796,4 +803,30 @@ span.date {
 }
 .react-multi-carousel-item {
   margin-right: 0px !important; 
+}
+
+.css-1dxwrht-MuiTypography-root .active{
+  margin: 0;
+  font-family: "Jost",sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: white;
+  background-color: #f8b864;
+  padding: 8px;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.css-1dxwrht-MuiTypography-root {
+  margin: 0;
+  font-family: "Jost",sans-serif;
+  font-weight: 550;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: black;
+  padding: 8px;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
 }

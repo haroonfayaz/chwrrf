@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAllEvents } from "../eventApi";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const CampaignsComponent = () => {
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
+
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -13,7 +15,7 @@ const CampaignsComponent = () => {
     },
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3,
+      items: 4,
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
@@ -25,14 +27,19 @@ const CampaignsComponent = () => {
     },
   };
 
+  const handleClick = (camp) => {
+    navigate("/blog", {
+      state: { camp: camp, data: events, heading: "Recent Campaigns" },
+    });
+  };
 
   const fetchEvents = () => {
     try {
       getAllEvents()
-        .then(data => {
+        .then((data) => {
           setEvents(data);
         })
-        .catch(e => {
+        .catch((e) => {
           console.error("Error fetching events:", e);
         });
     } catch (error) {
@@ -69,9 +76,11 @@ const CampaignsComponent = () => {
               <div className="card-body">
                 <h5 className="card-title">{camp.title}</h5>
                 <p className="card-text">{camp.description}</p>
-                <Link to="/blog" className="read-more-link">
-                  Read more
-                </Link>
+                <div onClick={() => handleClick(camp)}>
+                  <Link to="/blog" className="read-more-link">
+                    Read more
+                  </Link>
+                </div>
               </div>
             </div>
           ))}

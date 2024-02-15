@@ -16,16 +16,16 @@ const TeamComponent = () => {
       items: 3,
     },
   };
- 
+
   return (
     <div>
       <div className="container-fluid">
-      <div className="line tem" id="team">
-              <div className="section-heading text-center mb-40">
-                <h2>Our Team</h2>
-                <span className="heading-border"></span>
-              </div>
-            </div>
+        <div className="line tem" id="team">
+          <div className="section-heading text-center mb-40">
+            <h2>Our Team</h2>
+            <span className="heading-border"></span>
+          </div>
+        </div>
         <OwlCarousel
           items={3}
           className="owl-theme"
@@ -35,27 +35,24 @@ const TeamComponent = () => {
           autoplay={true}
           navContainerClass="owl-nav"
           responsive={responsiveSettings}
-
-
         >
-        {
-          team_members.map((member,index)=>(
-            <div className="testimonial-item">
-            <div className="testi-footer" key={index}>
-              <img src={member.img} alt="profile" />
-              <h4>
-                {member.name}<span>{member.designation}</span>
-                <span>{member.title}</span>
-              </h4>
+          {team_members.map((member, index) => (
+            <div className="testimonial-item" key={member.id}>
+              <div className="testi-footer" key={index}>
+                <img src={member.img} alt="profile" />
+                <h4>
+                  {member.name}
+                  <span>{member.designation}</span>
+                  <span>{member.title}</span>
+                </h4>
+              </div>
+              <p style={{ marginTop: "15px" }}>
+                {member.qual}
+                <br />
+                <br />
+              </p>
             </div>
-            <p style={{ marginTop: "15px" }}>
-              {member.qual}
-              <br />
-              <br />
-            </p>
-          </div>
           ))}
-     
         </OwlCarousel>
       </div>
     </div>

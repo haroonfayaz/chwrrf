@@ -28,9 +28,6 @@ const Navbar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-  const toHome =()=>{
-    window.scrollTo(0, 0);
-  }
 
   return (
     <>
@@ -88,36 +85,18 @@ const Navbar = () => {
                   },
                 }}
               >
-                <Link
-                  to="/"
-                  style={{
-                    textDecoration: "none",
-                    color: "black",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      textDecoration: "none",
-                      color: "black",
-                      fontWeight: 400,
-                      fontSize: 16,
-                      pl: 2,
-                    }}
-                    onClick={toHome}
-                  >
-                    Home
-                  </Typography>
-                </Link>
                 {menuItems.map((item) => (
                   <MenuItem key={item.route} onClick={handleCloseNavMenu}>
-                    <Typography>
+                    <Typography
+                      className={item.isActive ? "active-nav-link" : ""}
+                    >
                       <ScrollLink
                         activeClass="active"
                         to={item.target}
                         spy={true}
                         smooth={true}
                         offset={-70}
-                        duration={0}
+                        duration={200}
                       >
                         {item.route}
                       </ScrollLink>
@@ -132,11 +111,10 @@ const Navbar = () => {
               sx={{
                 width: 50,
                 height: 50,
-                alignItems:"center",
-                justifyContent:"center",
-                display: { xs: "flex",sm:"flex", md: "none" },
+                alignItems: "center",
+                justifyContent: "center",
+                display: { xs: "flex", sm: "flex", md: "none" },
                 marginRight: 20,
-
               }}
               variant="rounded"
             />
@@ -149,42 +127,10 @@ const Navbar = () => {
                 alignItems: "center",
               }}
             >
-              <Link
-                to="/"
-                style={{
-                  textDecoration: "none",
-                  color: "black",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontWeight: 600,
-                    fontSize: 15,
-                    p: "15px",
-                    borderRadius:"5px",
-                    "&:hover": {
-                      color: "white",
-                      backgroundColor:"#f8b864"
-                    },
-                  }}
-                  onClick={toHome}
-
-                >
-                  Home
-                </Typography>
-              </Link>
               {menuItems.map((item) => (
                 <MenuItem key={item.route} onClick={handleCloseNavMenu}>
                   <Typography
-                    sx={{
-                      textDecoration: "none",
-                      color: "black",
-                      fontWeight: 600,
-                      fontSize: 15,
-                      "&:hover": {
-                        color: "#f8b864",
-                      },
-                    }}
+                    className={item.isActive ? "active-nav-link" : ""}
                   >
                     <ScrollLink
                       activeClass="active"
@@ -192,7 +138,7 @@ const Navbar = () => {
                       spy={true}
                       smooth={true}
                       offset={-70}
-                      duration={500}
+                      duration={200}
                     >
                       {item.route}
                     </ScrollLink>
@@ -206,7 +152,7 @@ const Navbar = () => {
                   variant="contained"
                   sx={{
                     fontWeight: 600,
-                    display:{xs:"none",sm:"none",md:"flex"},
+                    display: { xs: "none", sm: "none", md: "flex" },
                     height: "40px",
                     width: "150px",
                     fontSize: "14px",
@@ -217,7 +163,6 @@ const Navbar = () => {
                     },
                   }}
                   onClick={handleDonateNowClick}
-
                 >
                   Donate Now
                 </Button>
